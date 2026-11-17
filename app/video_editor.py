@@ -314,7 +314,7 @@ def render_reel(scenes: list[dict], frame_dirs: list[Path],
     ]
     logger.info("Rendering final Reel (%d scenes, ~%.1fs) ...",
                 len(scene_videos), total_duration)
-    res = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+    res = subprocess.run(cmd, capture_output=True, text=True, timeout=900)
     if res.returncode != 0 or not output_mp4.exists():
         raise VideoError(f"Final render failed: {res.stderr.strip()[-1500:]}")
 
