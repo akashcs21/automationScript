@@ -107,12 +107,18 @@ def generate_script(excluded_topics: list[str], retries: int = 3) -> dict:
     if not GEMINI_API_KEY:
         raise ScriptError("GEMINI_API_KEY is not set — cannot generate a script.")
 
-    url = GEMINI_URL.format(model=GEMINI_MODEL)
+    models_to_try = [GEMINI_MODEL]
+    for fb in ["gemini-2.5-flash-lite", "gemini-3.5-flash", "gemini-flash-latest"]:
+        if fb not in models_to_try:
+            models_to_try.append(fb)
+
     headers = {"Content-Type": "application/json"}
     prompt = _build_prompt(excluded_topics)
 
     last_error: str | None = None
     for attempt in range(1, retries + 1):
+        model = models_to_try[(attempt - 1) % len(models_to_try)]
+        url = GEMINI_URL.format(model=model)
         try:
             body = {
                 "contents": [{"parts": [{"text": prompt}]}],
@@ -129,7 +135,7 @@ def generate_script(excluded_topics: list[str], retries: int = 3) -> dict:
                 timeout=60,
             )
             if resp.status_code != 200:
-                last_error = f"Gemini HTTP {resp.status_code}: {resp.text[:200]}"
+                last_error = f"Gemini ({model}) HTTP {resp.status_code}: {resp.text[:200]}"
                 logger.warning("Gemini attempt %d failed: %s", attempt, last_error)
                 time.sleep(2 * attempt)
                 continue
