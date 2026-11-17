@@ -1,10 +1,13 @@
-name: JIGYASA LAB — Daily Reel Automation
+name: JIGYASA LAB — Reel Automation (4x Daily)
 
 on:
-  # 18:00 India time (Asia/Kolkata = UTC+5:30) every day.
-  # GitHub Actions cron runs in UTC, so 18:00 IST = 12:30 UTC.
+  # 4 times daily at prime engagement hours in India (Asia/Kolkata = UTC+5:30):
+  #   - 09:00 AM IST = 03:30 UTC
+  #   - 01:00 PM IST = 07:30 UTC
+  #   - 05:00 PM IST = 11:30 UTC
+  #   - 09:00 PM IST = 15:30 UTC
   schedule:
-    - cron: '30 12 * * *'
+    - cron: '30 3,7,11,15 * * *'
   # Manual trigger for testing.
   workflow_dispatch:
 
@@ -50,7 +53,8 @@ jobs:
             echo "No state changes to commit."
           else
             git commit -m "chore: update JIGYASA LAB topic history & publish log [skip ci]"
-            git push
+            git pull --rebase origin main
+            git push origin main
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
