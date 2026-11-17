@@ -7,7 +7,13 @@
       "content_hash": "d857999be9e5335ea9b4a61a86d762c88788dcc8a81826a5fb676d0bddf5e720",
       "status": "dry_run",
       "used_at": "2026-11-17T13:06:17.461537+00:00"
+    },
+    {
+      "topic": "The bizarre life cycle of the immortal jellyfish",
+      "content_hash": "438b3bd44769717a0cc9c45fcce5dd526a00d49b9766ccf2b7bcab0e2465e77c",
+      "status": "publish_failed",
+      "used_at": "2026-11-17T13:44:37.267242+00:00"
     }
   ],
-  "last_updated": "2026-11-17T13:06:17.461546+00:00"
+  "last_updated": "2026-11-17T13:44:37.267254+00:00"
 }
