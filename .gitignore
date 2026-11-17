@@ -1,0 +1,65 @@
+# JIGYASA LAB automation — gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+parts/
+var/
+wheels/
+pip-log.txt
+pip-wheel-requirements.txt
+share/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+~*
+
+# Environment secrets
+.env
+.env.local
+*.env
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Project runtime artifacts (do not commit)
+output/*.mp4
+output/*.wav
+output/*.srt
+output/*.png
+output/*.json
+output/*.log
+*.reel-state.json
+
+# NOTE: data/topics.json and data/published.json are TRACKED state files.
+# They persist topic history and the publishing log across daily runs so the
+# system never repeats a topic and never publishes a duplicate Reel. The
+# workflow commits updates back to the repo after each run.
+
+# Logs
+*.log
+logs/

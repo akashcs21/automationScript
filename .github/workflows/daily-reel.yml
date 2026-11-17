@@ -1,0 +1,66 @@
+name: JIGYASA LAB — Daily Reel Automation
+
+on:
+  # 18:00 India time (Asia/Kolkata = UTC+5:30) every day.
+  # GitHub Actions cron runs in UTC, so 18:00 IST = 12:30 UTC.
+  schedule:
+    - cron: '30 12 * * *'
+  # Manual trigger for testing.
+  workflow_dispatch:
+
+jobs:
+  daily-reel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install system dependencies (FFmpeg, eSpeak NG)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg espeak-ng
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run JIGYASA LAB Reel pipeline
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          GRAPH_API_VERSION: ${{ secrets.GRAPH_API_VERSION }}
+          PUBLISH_ENABLED: ${{ secrets.PUBLISH_ENABLED }}
+          DRY_RUN: ${{ secrets.DRY_RUN }}
+          BRAND_NAME: ${{ secrets.BRAND_NAME }}
+        run: python app/main.py
+
+      - name: Persist topic history & publish log
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/topics.json data/published.json
+          if git diff --cached --quiet; then
+            echo "No state changes to commit."
+          else
+            git commit -m "chore: update JIGYASA LAB topic history & publish log [skip ci]"
+            git push
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload run logs (artifacts, never secrets)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jigyasa-lab-logs
+          path: |
+            output/run.log
+            output/error_report.json
+          retention-days: 7
