@@ -1,6 +1,16 @@
 {
   "brand": "JIGYASA LAB",
   "description": "Publishing log of Reels published to the Facebook Page.",
-  "published": [],
-  "last_updated": null
+  "published": [
+    {
+      "topic": "The strange phenomenon of 'raining diamonds' on gas giants",
+      "reel_title": "Diamonds are falling from the sky!",
+      "category": "Space and astronomy",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261117_130450.mp4",
+      "content_hash": "d857999be9e5335ea9b4a61a86d762c88788dcc8a81826a5fb676d0bddf5e720",
+      "dry_run": true,
+      "status": "dry_run"
+    }
+  ],
+  "last_updated": "2026-11-17T13:06:17Z"
 }

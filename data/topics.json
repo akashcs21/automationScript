@@ -1,6 +1,13 @@
 {
   "brand": "JIGYASA LAB",
   "description": "History of topics used for JIGYASA LAB daily Reels to avoid repetition.",
-  "topics": [],
-  "last_updated": null
+  "topics": [
+    {
+      "topic": "The strange phenomenon of 'raining diamonds' on gas giants",
+      "content_hash": "d857999be9e5335ea9b4a61a86d762c88788dcc8a81826a5fb676d0bddf5e720",
+      "status": "dry_run",
+      "used_at": "2026-11-17T13:06:17.461537+00:00"
+    }
+  ],
+  "last_updated": "2026-11-17T13:06:17.461546+00:00"
 }
