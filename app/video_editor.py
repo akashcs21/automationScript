@@ -254,45 +254,35 @@ def _build_filtergraph(scene_videos: list[Path], subtitles_srt: Path,
                     "PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,"
                     "BackColour=&H60000000,Outline=2,Shadow=1,MarginV=90,"
                     "Alignment=2'")
-    vf = f"{final_video},subtitles='{subtitles_srt.as_posix()}':{normal_style}"
-    if highlight_srt and highlight_srt.exists():
+    srt_path = subtitles_srt.as_posix().replace(":", "\\:").replace("'", "\\'")
+    vf = f"{final_video}subtitles=filename='{srt_path}':{normal_style}"
+    if highlight_srt and highlight_srt.exists() and highlight_srt.stat().st_size > 0:
+        hl_path = highlight_srt.as_posix().replace(":", "\\:").replace("'", "\\'")
         hl_style = ("force_style='FontName=DejaVu Sans-Bold,FontSize=30,"
                     "PrimaryColour=&H0000FFFF,OutlineColour=&H00000000,"
                     "BackColour=&H60000000,Outline=2,Shadow=1,MarginV=90,"
                     "Alignment=2'")
-        vf += f",subtitles='{highlight_srt.as_posix()}':{hl_style}"
+        vf += f",subtitles=filename='{hl_path}':{hl_style}"
     parts.append(f"{vf}[outv]")
 
     # Audio: narration + looped music + SFX at scene starts.
     n_idx = len(scene_videos)
     m_idx = n_idx + 1
+    sfx_chime_idx = m_idx + 1
+    sfx_whoosh_idx = m_idx + 2
+    scene_durs = [_format_duration(_probe(sv)) for sv in scene_videos]
+    trans_delay = int(scene_durs[0] * 1000) if scene_durs else 5000
+
     a_parts: list[str] = [
         f"[{n_idx}:a]volume=1.0[a_nar]",
         f"[{m_idx}:a]aloop=loop=-1:size=2e+09,volume=0.16[a_mus]",
         "[a_nar][a_mus]amix=inputs=2:duration=longest[a_mix]",
+        f"[{sfx_chime_idx}:a]volume=0.7[sfx_c]",
+        f"[{sfx_whoosh_idx}:a]volume=0.7,adelay={trans_delay}|{trans_delay}[sfx_w]",
+        "[a_mix][sfx_c][sfx_w]amix=inputs=3:duration=longest[a_final]",
     ]
 
-    sfx_idx = m_idx + 1
-    sfx_labels: list[str] = []
-    scene_durs = [_format_duration(_probe(sv)) for sv in scene_videos]
-    cum = 0.0
-    si = 0
-    for d in scene_durs:
-        sfx_key = "chime" if si % 2 == 0 else "whoosh"
-        label = f"[{sfx_idx + si}:a]volume=0.7,adelay={int(cum * 1000)}|{int(cum * 1000)}[sfx{si}]"
-        a_parts.append(label)
-        sfx_labels.append(f"[sfx{si}]")
-        cum += d
-        si += 1
-
-    if sfx_labels:
-        a_parts.append(f"[a_mix]{''.join(sfx_labels)}amix=inputs={len(sfx_labels) + 1}"
-                       f":duration=longest[a_final]")
-        final_audio = "[a_final]"
-    else:
-        final_audio = "[a_mix]"
-
-    return "; ".join(parts + a_parts), "[outv]", final_audio
+    return "; ".join(parts + a_parts), "[outv]", "[a_final]"
 
 
 def render_reel(scenes: list[dict], frame_dirs: list[Path],
