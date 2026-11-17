@@ -168,36 +168,19 @@ def _fit_duration(video_path: Path, min_d: float = DURATION_MIN,
                   from_seconds=round(dur, 2), to_seconds=max_d)
     else:
         # Pad with a freeze-frame of the last frame to reach min_d.
-        pad = min_d - dur
-        freeze = OUTPUT_DIR / "freeze_last.mp4"
-        cmd_freeze = [
+        pad = round(min_d - dur + 0.1, 2)
+        cmd_pad = [
             FFMPEG, "-y", "-i", str(video_path),
-            "-vf", f"freeze=end=1",
-            "-frames:v", "1",
-            "-c:v", VIDEO_CODEC, "-pix_fmt", PIXEL_FORMAT,
-            "-t", str(pad), "-an", str(freeze),
-        ]
-        res = subprocess.run(cmd_freeze, capture_output=True, text=True, timeout=300)
-        if res.returncode != 0 or not freeze.exists():
-            raise VideoError(f"Freeze-frame pad failed: {res.stderr.strip()[-500:]}")
-
-        # Concat original + freeze.
-        list_file = OUTPUT_DIR / "concat_list.txt"
-        list_file.write_text(
-            f"file '{video_path.as_posix()}'\n"
-            f"file '{freeze.as_posix()}'\n",
-            encoding="utf-8",
-        )
-        cmd_cat = [
-            FFMPEG, "-y", "-f", "concat", "-safe", "0", "-i", str(list_file),
-            "-c", "copy", "-t", str(min_d),
+            "-filter_complex", f"[0:v]tpad=stop_mode=clone:stop_duration={pad}[v];[0:a]apad=pad_dur={pad}[a]",
+            "-map", "[v]", "-map", "[a]",
+            "-c:v", VIDEO_CODEC, "-pix_fmt", PIXEL_FORMAT, "-r", str(FPS),
+            "-c:a", AUDIO_CODEC, "-b:a", "128k",
+            "-t", str(min_d),
             "-movflags", "+faststart", str(tmp),
         ]
-        res = subprocess.run(cmd_cat, capture_output=True, text=True, timeout=300)
+        res = subprocess.run(cmd_pad, capture_output=True, text=True, timeout=300)
         if res.returncode != 0 or not tmp.exists():
-            raise VideoError(f"Duration pad concat failed: {res.stderr.strip()[-500:]}")
-        freeze.unlink(missing_ok=True)
-        list_file.unlink(missing_ok=True)
+            raise VideoError(f"Freeze-frame pad failed: {res.stderr.strip()[-500:]}")
         log_event("duration_fitted", action="padded",
                   from_seconds=round(dur, 2), to_seconds=min_d)
 

@@ -73,29 +73,35 @@ def _append_published(record: dict) -> None:
 def _calibrate_scene_durations(scenes: list[dict], narration_duration: float,
                                target: float = 40.0, min_d: float = 35.0,
                                max_d: float = 45.0) -> list[dict]:
-    """Rescale AI scene durations so they sum to ~target (clamped to 35–45s).
+    """Rescale AI scene durations so post-crossfade video sums to ~target (35–45s).
 
     Uses the real narration WAV duration as the anchor so subtitles, narration,
-    and scene changes stay synchronized.
+    and scene changes stay synchronized, factoring in 1.0s crossfade overlap.
     """
     import copy
     scenes = copy.deepcopy(scenes)
+    # Account for 1.0s overlap on each transition between scenes
+    trans_loss = max(0.0, (len(scenes) - 1) * 1.0)
+    effective_target = target + trans_loss
+    effective_min = min_d + trans_loss
+    effective_max = max_d + trans_loss
+
     planned = sum(float(s.get("duration_seconds", 6)) for s in scenes)
     if planned <= 0:
         planned = len(scenes) * 6.0
 
-    scale = target / planned
+    scale = effective_target / planned
     for s in scenes:
         s["duration_seconds"] = max(3.0, round(
             float(s.get("duration_seconds", 6)) * scale, 2))
 
     total = sum(float(s.get("duration_seconds", 6)) for s in scenes)
-    if total < min_d:
+    if total < effective_min:
         scenes[-1]["duration_seconds"] = round(
-            scenes[-1]["duration_seconds"] + (min_d - total), 2)
-    elif total > max_d:
+            scenes[-1]["duration_seconds"] + (effective_min - total), 2)
+    elif total > effective_max:
         scenes[-1]["duration_seconds"] = max(
-            3.0, round(scenes[-1]["duration_seconds"] - (total - max_d), 2))
+            3.0, round(scenes[-1]["duration_seconds"] - (total - effective_max), 2))
     return scenes
 
 
