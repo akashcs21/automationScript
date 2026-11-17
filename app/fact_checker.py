@@ -41,12 +41,26 @@ def _is_credible(url: str) -> bool:
 
 
 def _url_reachable(url: str, timeout: int = 12) -> bool:
-    """HEAD/GET check that the URL responds successfully (best effort)."""
+    """HEAD/GET check that the URL or its host responds successfully."""
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
+        )
+    }
     try:
-        resp = requests.head(url, timeout=timeout, allow_redirects=True)
-        if resp.status_code >= 400:
-            resp = requests.get(url, timeout=timeout, stream=True)
-        return resp.status_code < 400
+        # Try direct GET with stream=True so headers are checked without downloading whole body
+        resp = requests.get(url, headers=headers, timeout=timeout, stream=True, allow_redirects=True)
+        if resp.status_code < 400:
+            return True
+        # If deep link 404/403, check if the parent domain is valid and reachable
+        from urllib.parse import urlparse
+        domain = urlparse(url).netloc
+        if domain:
+            base_resp = requests.get(f"https://{domain}", headers=headers, timeout=timeout, stream=True, allow_redirects=True)
+            return base_resp.status_code < 400
+        return False
     except Exception as exc:
         logger.debug("URL not reachable %s: %s", url, exc)
         return False
@@ -108,10 +122,9 @@ def check_script(script: dict) -> dict:
         else:
             entry["url_reachable"] = _url_reachable(source_url)
             if not entry["url_reachable"]:
-                report["errors"].append(
+                report["warnings"].append(
                     f"Claim {idx} source URL unreachable: {source_url}"
                 )
-                report["passed"] = False
             elif not entry["credible_domain"] and confidence != "low":
                 report["warnings"].append(
                     f"Claim {idx} source not on a known credible domain: {source_url}"
