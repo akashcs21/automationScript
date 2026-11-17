@@ -33,8 +33,8 @@ import topic_manager
 import voice_generator
 import visual_generator
 import video_editor
-from config import (DATA_DIR, DRY_RUN, OUTPUT_DIR, PUBLISHED_FILE,
-                    validate_config, is_publishing_allowed)
+from config import (DATA_DIR, DRY_RUN, DURATION_MAX, DURATION_MIN, OUTPUT_DIR,
+                    PUBLISHED_FILE, validate_config, is_publishing_allowed)
 from logger import logger, log_event, setup_logging
 
 ERROR_REPORT = OUTPUT_DIR / "error_report.json"
