@@ -16,7 +16,7 @@ from pathlib import Path
 
 from config import (
     AUDIO_CODEC, DURATION_MAX, DURATION_MIN, FPS, HEIGHT, OUTPUT_DIR,
-    PIXEL_FORMAT, VIDEO_CODEC, WIDTH,
+    PIXEL_FORMAT, REEL_STYLE, VIDEO_CODEC, WIDTH,
 )
 from logger import logger, log_event
 
@@ -303,19 +303,26 @@ def _build_filtergraph(scene_videos: list[Path], subtitles_srt: Path,
 
     final_video = prev_label or "[0:v]"
 
-    # Burn subtitles (normal + optional highlighted track).
-    normal_style = ("force_style='FontName=DejaVu Sans-Bold,FontSize=28,"
-                    "PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,"
-                    "BackColour=&H60000000,Outline=2,Shadow=1,MarginV=90,"
-                    "Alignment=2'")
+    # Burn subtitles (stickman centered style vs standard science bottom bar)
+    if REEL_STYLE == "stickman":
+        normal_style = ("force_style='FontName=DejaVu Sans-Bold,FontSize=36,"
+                        "PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,"
+                        "BackColour=&H00000000,Outline=4,Shadow=0,MarginV=800,"
+                        "Alignment=2'")
+    else:
+        normal_style = ("force_style='FontName=DejaVu Sans-Bold,FontSize=28,"
+                        "PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,"
+                        "BackColour=&H60000000,Outline=2,Shadow=1,MarginV=90,"
+                        "Alignment=2'")
     srt_path = subtitles_srt.as_posix().replace(":", "\\:").replace("'", "\\'")
     vf = f"{final_video}subtitles=filename='{srt_path}':{normal_style}"
     if highlight_srt and highlight_srt.exists() and highlight_srt.stat().st_size > 0:
         hl_path = highlight_srt.as_posix().replace(":", "\\:").replace("'", "\\'")
-        hl_style = ("force_style='FontName=DejaVu Sans-Bold,FontSize=30,"
-                    "PrimaryColour=&H0000FFFF,OutlineColour=&H00000000,"
-                    "BackColour=&H60000000,Outline=2,Shadow=1,MarginV=90,"
-                    "Alignment=2'")
+        hl_margin = 800 if REEL_STYLE == "stickman" else 90
+        hl_style = (f"force_style='FontName=DejaVu Sans-Bold,FontSize=38,"
+                    f"PrimaryColour=&H0000FFFF,OutlineColour=&H00000000,"
+                    f"BackColour=&H00000000,Outline=4,Shadow=0,MarginV={hl_margin},"
+                    f"Alignment=2'")
         vf += f",subtitles=filename='{hl_path}':{hl_style}"
     parts.append(f"{vf}[outv]")
 

@@ -26,6 +26,7 @@ from config import (
     LANGUAGE,
     NARRATION_WORDS_MAX,
     NARRATION_WORDS_MIN,
+    REEL_STYLE,
 )
 from logger import logger, log_event
 
@@ -50,7 +51,88 @@ TOPIC_CATEGORIES = [
 ]
 
 
+def _build_stickman_prompt(excluded_topics: list[str]) -> str:
+    excluded = ", ".join(f'"{t}"' for t in excluded_topics) or "none"
+    return f"""
+You are the executive creator and viral storyteller for "{BRAND_NAME}" — famous 2D Stickman Animated Stories & Psychological Parables (in the iconic style of @mrstickman_1).
+Format: High-retention vertical Facebook Reel (9:16, 1080x1920, 30 FPS, ~35-40 seconds).
+Tone: Calm, wise, compelling storyteller English — conversational, relatable, with an unexpected twist and life/mind lesson.
+Goal: Maximize viral shares, saves, retention, and comments.
+
+TASK:
+Write ONE original, unforgettable Stickman story or philosophical/psychological parable.
+Viral themes to choose from:
+- Time vs Money Parables (e.g. The Fisherman and the Millionaire)
+- Delayed Gratification & Invisible Growth (e.g. The Chinese Bamboo Tree)
+- Priorities & Mental Clarity (e.g. The Jar of Life: Rocks, Pebbles, Sand)
+- Self-Worth & Resilience (e.g. The $100 Bill in the Dirt)
+- Human Psychology & Overthinking (e.g. The 2 AM Trap, The Paradox of Choice)
+- Social Psychology & Envy (e.g. The Crab Mentality, The Echo of Karma)
+- Habit Compounding & Growth (e.g. The 1% Daily Shift, The Two Wolves)
+
+STRICTLY AVOID these previously used topics: {excluded}.
+
+STORY TIMELINE STRUCTURE (~70–90 words total, paced for ~35s narration):
+1. [0–5s | Setup & Hook]: Introduce the stickman character in an everyday or intriguing situation.
+2. [5–12s | Conflict / Question]: A second stickman enters or asks a provocative question.
+3. [12–20s | Escalation]: The dialogue deepens or a common trap is highlighted.
+4. [20–28s | The Twist / Punchline]: The unexpected realization or counter-intuitive truth.
+5. [28–34s | Moral & Interactive Question]: Direct question asking viewers: "Who was right? Drop your thoughts below 👇"
+6. [34–38s | CTA]: "Follow {BRAND_NAME} for more animated wisdom."
+
+SCENE BREAKDOWN (Exactly 5–6 scenes):
+Each scene must define:
+- "scene": number 1 to 6
+- "setting": one of ["beach_car", "modern_office", "city_street", "classroom_chalkboard", "park_bench", "living_room"]
+- "character_left": description of left stickman (e.g. "fisherman in bucket hat reclining on sand")
+- "character_right": description of right stickman (e.g. "businessman in grey suit and tie standing")
+- "action": character posture/action (e.g. "businessman gesturing at sea while fisherman smiles")
+- "description": summary visual description
+- "on_screen_text": short punchy 1–3 word kinetic caption in ALL CAPS (e.g. "TIRED?", "THEN WHAT?", "WHY NOT NOW?", "WHO'S RIGHT? 👇")
+- "duration_seconds": 5–7 seconds (summing to 35–42 seconds)
+- "camera_motion": "zoom_in" or "pan_up" or "zoom_out"
+
+SUBTITLES:
+7–10 short synchronized segments covering 0.0s to ~38s with "highlight": true on key words.
+
+OUTPUT FORMAT:
+Return ONLY valid JSON (no markdown fences, no prose). Schema:
+{{
+  "topic": "The Fisherman and the Businessman",
+  "category": "Time vs Money",
+  "reel_title": "The Millionaire's Biggest Mistake",
+  "opening_hook": "A rich businessman saw a stickman fisherman resting by the beach...",
+  "audience_question": "Who was right? The Businessman or the Fisherman? 👇",
+  "narration_script": "80 words of natural, story-driven narration following the timeline",
+  "scenes": [
+    {{
+      "scene": 1,
+      "setting": "beach_car",
+      "character_left": "fisherman in bucket hat reclining on sand with fishing rod",
+      "character_right": "businessman in grey suit standing next to black sedan",
+      "action": "businessman arrives and watches fisherman",
+      "description": "fisherman resting by beach as luxury car arrives",
+      "on_screen_text": "RELAXING?",
+      "camera_motion": "zoom_in",
+      "duration_seconds": 6.0
+    }}
+  ],
+  "subtitle_segments": [
+    {{"start": 0.0, "end": 3.0, "text": "A rich businessman was walking on the beach...", "highlight": false}}
+  ],
+  "facebook_caption": "Engaging caption with story breakdown, emojis, and discussion question",
+  "pinned_comment": "Who do you side with? 👇 A) The Businessman (Ambition) B) The Fisherman (Present Peace). Let's debate in the comments!",
+  "story_poll": "Ambition or Peace of Mind?",
+  "hashtags": ["#JigyasaLab", "#StickmanStories", "#LifeLessons", "#Wisdom", "#Philosophy"],
+  "factual_claims": [{{"claim": "Philosophical parable on time and wealth", "source_url": "https://en.wikipedia.org/wiki/Anekdote_zur_Senkung_der_Arbeitsmoral", "confidence": "high"}}],
+  "caveats": ["Perspectives vary between financial security and minimalism"]
+}}
+"""
+
+
 def _build_prompt(excluded_topics: list[str]) -> str:
+    if REEL_STYLE == "stickman":
+        return _build_stickman_prompt(excluded_topics)
     excluded = ", ".join(f'"{t}"' for t in excluded_topics) or "none"
     return f"""
 You are the executive showrunner and science writer for "{BRAND_NAME}" — {BRAND_TAGLINE}.
@@ -228,8 +310,10 @@ def _validate_script(script: dict) -> bool:
         return False
     total_scene_seconds = 0.0
     for scene in scenes:
-        if not scene.get("description") or not scene.get("on_screen_text"):
-            return False
+        if not scene.get("description"):
+            scene["description"] = f"{scene.get('character_left', 'Stickman')} and {scene.get('character_right', 'character')} in {scene.get('setting', 'scene')}"
+        if not scene.get("on_screen_text"):
+            scene["on_screen_text"] = scene.get("action", "STORY")[:15].upper()
         try:
             total_scene_seconds += float(scene.get("duration_seconds", 6))
         except (TypeError, ValueError):

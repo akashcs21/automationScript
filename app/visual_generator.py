@@ -25,6 +25,7 @@ from config import (
     FPS,
     HEIGHT,
     OUTPUT_DIR,
+    REEL_STYLE,
     WIDTH,
 )
 from logger import logger, log_event
@@ -446,6 +447,19 @@ def render_scene(scene: dict, scene_index: int, total_scenes: int,
     """Render cinematic base image and frames for one scene."""
     scene_dir = output_dir / f"scene_{scene_index:02d}"
     scene_dir.mkdir(parents=True, exist_ok=True)
+    base_path = scene_dir / "cinematic_base.png"
+
+    # Branch 1: 2D Stickman Story Animation style
+    if REEL_STYLE == "stickman" or scene.get("setting") or scene.get("character_left") or scene.get("character_right"):
+        from stickman_renderer import render_stickman_scene
+        render_stickman_scene(scene, scene_index, total_scenes, base_path)
+        # Save preview frames for backward compatibility
+        import shutil
+        shutil.copy(base_path, scene_dir / "frame_0000.png")
+        shutil.copy(base_path, scene_dir / "frame_0001.png")
+        log_event("scene_rendered", scene=scene_index, style="stickman",
+                  cinematic_base=str(base_path))
+        return scene_dir
 
     description = scene.get("description", "")
     visual_query = scene.get("visual_query") or scene.get("on_screen_text") or description

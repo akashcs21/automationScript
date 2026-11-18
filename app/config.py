@@ -57,6 +57,13 @@ COLOR_YELLOW = "#FFD166"
 NARRATION_WORDS_MIN = 75
 NARRATION_WORDS_MAX = 100
 
+# Reel format style: "stickman" (viral 2D cartoon animation like @mrstickman_1) or "science"
+REEL_STYLE = os.getenv("REEL_STYLE", "stickman").lower()
+
+# AI Video Model APIs (optional for true video generation)
+KLING_API_KEY = os.getenv("KLING_API_KEY", "")
+REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN", "")
+
 # AI
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
