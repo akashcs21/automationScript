@@ -32,7 +32,18 @@
       "status": "published",
       "video_id": "2728796694201934",
       "post_id": "122109787857540744"
+    },
+    {
+      "topic": "The Effects of Extreme Sleep Deprivation on the Human Brain",
+      "reel_title": "Your Brain on NO SLEEP: The Terrifying Truth!",
+      "category": "Human body and psychology",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261118_052046.mp4",
+      "content_hash": "3a0a14715392969d779da87f741e63da7b4c0e9a9e316e5b9b6775984011190f",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "1136591182436476",
+      "post_id": "122109795201540744"
     }
   ],
-  "last_updated": "2026-11-18T04:57:40Z"
+  "last_updated": "2026-11-18T05:22:16Z"
 }

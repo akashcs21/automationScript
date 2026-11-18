@@ -37,7 +37,13 @@
       "content_hash": "96185f322baa45ba1b83ebe513586987aff76cfd8c53fe64ef97aada7f503c82",
       "status": "published",
       "used_at": "2026-11-18T04:57:40.388674+00:00"
+    },
+    {
+      "topic": "The Effects of Extreme Sleep Deprivation on the Human Brain",
+      "content_hash": "3a0a14715392969d779da87f741e63da7b4c0e9a9e316e5b9b6775984011190f",
+      "status": "published",
+      "used_at": "2026-11-18T05:22:16.165718+00:00"
     }
   ],
-  "last_updated": "2026-11-18T04:57:40.388690+00:00"
+  "last_updated": "2026-11-18T05:22:16.165738+00:00"
 }
