@@ -43,7 +43,18 @@
       "status": "published",
       "video_id": "1136591182436476",
       "post_id": "122109795201540744"
+    },
+    {
+      "topic": "The Mind-Bending Reality of Quantum Entanglement",
+      "reel_title": "Spooky Action: Linked Across the Universe!",
+      "category": "Science and physics",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261118_120329.mp4",
+      "content_hash": "5125226746c3eb2f3cfc03c5091dffb198c707f6b85fdc031b035a455d573b92",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "1185499737381850",
+      "post_id": "122109928353540744"
     }
   ],
-  "last_updated": "2026-11-18T05:22:16Z"
+  "last_updated": "2026-11-18T12:04:59Z"
 }

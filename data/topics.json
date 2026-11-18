@@ -43,7 +43,13 @@
       "content_hash": "3a0a14715392969d779da87f741e63da7b4c0e9a9e316e5b9b6775984011190f",
       "status": "published",
       "used_at": "2026-11-18T05:22:16.165718+00:00"
+    },
+    {
+      "topic": "The Mind-Bending Reality of Quantum Entanglement",
+      "content_hash": "5125226746c3eb2f3cfc03c5091dffb198c707f6b85fdc031b035a455d573b92",
+      "status": "published",
+      "used_at": "2026-11-18T12:04:59.015837+00:00"
     }
   ],
-  "last_updated": "2026-11-18T05:22:16.165738+00:00"
+  "last_updated": "2026-11-18T12:04:59.015855+00:00"
 }
