@@ -25,7 +25,13 @@
       "content_hash": "98bb0fd104d8edea6bfe163db071933ec10046d0e85b9ef970f76bfc78858abe",
       "status": "publish_failed",
       "used_at": "2026-11-18T04:08:51.452536+00:00"
+    },
+    {
+      "topic": "The Earth's Magnetic Field is Flipping",
+      "content_hash": "151e316217cd447366fc6d7f6e94cdeb56a34c55157e852457e9218c73103ab9",
+      "status": "published",
+      "used_at": "2026-11-18T04:37:16.971556+00:00"
     }
   ],
-  "last_updated": "2026-11-18T04:08:51.452548+00:00"
+  "last_updated": "2026-11-18T04:37:16.971565+00:00"
 }

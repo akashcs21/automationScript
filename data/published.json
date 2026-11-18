@@ -10,7 +10,18 @@
       "content_hash": "d857999be9e5335ea9b4a61a86d762c88788dcc8a81826a5fb676d0bddf5e720",
       "dry_run": true,
       "status": "dry_run"
+    },
+    {
+      "topic": "The Earth's Magnetic Field is Flipping",
+      "reel_title": "Earth's Magnetic Poles Are Moving!",
+      "category": "Space and astronomy",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261118_043602.mp4",
+      "content_hash": "151e316217cd447366fc6d7f6e94cdeb56a34c55157e852457e9218c73103ab9",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "1404851548338136",
+      "post_id": "122109781935540744"
     }
   ],
-  "last_updated": "2026-11-17T13:06:17Z"
+  "last_updated": "2026-11-18T04:37:16Z"
 }
