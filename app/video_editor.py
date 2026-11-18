@@ -225,10 +225,10 @@ def _build_filtergraph(scene_videos: list[Path], subtitles_srt: Path,
         offset = max(0.1, cumulative - trans_dur)
         parts.append(
             f"{prev_label}[{idx}:v]xfade=transition=fade:duration={trans_dur}"
-            f":offset={offset},{_get_scale_crop()}[v{idx}]"
+            f":offset={offset:.2f},{_get_scale_crop()}[v{idx}]"
         )
         prev_label = f"[v{idx}]"
-        cumulative += dur
+        cumulative = offset + dur
 
     final_video = prev_label or "[0:v]"
 
