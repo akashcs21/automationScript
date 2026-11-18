@@ -283,50 +283,139 @@ def _draw_stickman_head(draw: ImageDraw.ImageDraw, cx: int, cy: int, r: int = 75
         draw.line([(cx - 18, cy + 26), (cx + 18, cy + 26)], fill=(0, 0, 0), width=4)
 
 
-def _draw_businessman(draw: ImageDraw.ImageDraw, x: int, y: int, expr: str = "open",
-                      pose: str = "talking", looking: str = "left") -> None:
-    """Stickman in grey tailored business suit & tie."""
-    # Head
-    _draw_stickman_head(draw, x, y, r=76, expr=expr, looking=looking)
+def _draw_casual_student(draw: ImageDraw.ImageDraw, x: int, y: int, expr: str = "open",
+                         pose: str = "standing", looking: str = "left", color=(210, 60, 60)) -> None:
+    """Stickman in hoodie/sweater, jeans, and sneakers."""
+    _draw_stickman_head(draw, x, y, r=72, expr=expr, looking=looking)
+    torso_top = y + 72
+    torso_bottom = torso_top + 180
 
-    # Suit Torso
-    torso_top = y + 76
-    torso_bottom = torso_top + 190
-    draw.polygon([
-        (x - 48, torso_top + 10), (x + 48, torso_top + 10),
-        (x + 40, torso_bottom), (x - 40, torso_bottom)
-    ], fill=(92, 102, 118), outline=(0, 0, 0), width=5)
+    # Hoodie/Sweater
+    draw.polygon([(x - 45, torso_top + 10), (x + 45, torso_top + 10),
+                  (x + 38, torso_bottom), (x - 38, torso_bottom)],
+                 fill=color, outline=(0, 0, 0), width=5)
+    # Pocket pouch on hoodie
+    draw.rectangle([x - 24, torso_bottom - 50, x + 24, torso_bottom - 10], fill=(color[0]-25, color[1]-20, color[2]-20), outline=(0,0,0), width=3)
 
-    # White Collar & Tie
-    draw.polygon([(x - 16, torso_top + 10), (x + 16, torso_top + 10), (x, torso_top + 35)],
-                 fill=(255, 255, 255), outline=(0, 0, 0), width=2)
-    draw.polygon([(x - 8, torso_top + 30), (x + 8, torso_top + 30),
-                  (x + 10, torso_top + 130), (x, torso_top + 150), (x - 10, torso_top + 130)],
-                 fill=(25, 28, 34))
-
-    # Trousers / Legs
-    draw.line([(x - 22, torso_bottom), (x - 22, torso_bottom + 170)], fill=(0, 0, 0), width=8)
-    draw.line([(x + 22, torso_bottom), (x + 22, torso_bottom + 170)], fill=(0, 0, 0), width=8)
-    # Dress shoes
-    draw.ellipse([x - 45, torso_bottom + 165, x - 5, torso_bottom + 195], fill=(20, 20, 25))
-    draw.ellipse([x + 5, torso_bottom + 165, x + 45, torso_bottom + 195], fill=(20, 20, 25))
+    # Denim Jeans
+    draw.line([(x - 20, torso_bottom), (x - 20, torso_bottom + 160)], fill=(45, 75, 115), width=18)
+    draw.line([(x + 20, torso_bottom), (x + 20, torso_bottom + 160)], fill=(45, 75, 115), width=18)
+    # Sneakers
+    draw.ellipse([x - 40, torso_bottom + 155, x - 5, torso_bottom + 185], fill=(250, 250, 250), outline=(0,0,0), width=3)
+    draw.ellipse([x + 5, torso_bottom + 155, x + 40, torso_bottom + 185], fill=(250, 250, 250), outline=(0,0,0), width=3)
 
     # Arms
     if pose in ("talking", "gesturing"):
-        # One hand gesturing outward
-        draw.line([(x - 45, torso_top + 30), (x - 90, torso_top + 80), (x - 145, torso_top + 60)],
-                  fill=(0, 0, 0), width=7)
-        draw.ellipse([x - 165, torso_top + 50, x - 138, torso_top + 78], fill=(25, 25, 30))
-        # Other hand at side
-        draw.line([(x + 45, torso_top + 30), (x + 60, torso_top + 120)], fill=(0, 0, 0), width=7)
-        draw.ellipse([x + 50, torso_top + 115, x + 75, torso_top + 138], fill=(25, 25, 30))
-    elif pose in ("arms_crossed", "cross"):
-        draw.line([(x - 45, torso_top + 30), (x + 25, torso_top + 90)], fill=(0, 0, 0), width=8)
-        draw.line([(x + 45, torso_top + 30), (x - 25, torso_top + 90)], fill=(0, 0, 0), width=8)
+        draw.line([(x - 42, torso_top + 25), (x - 80, torso_top + 70), (x - 120, torso_top + 50)], fill=(0, 0, 0), width=7)
+        draw.ellipse([x - 140, torso_top + 40, x - 115, torso_top + 65], fill=(255, 255, 255), outline=(0,0,0), width=2)
+        draw.line([(x + 42, torso_top + 25), (x + 55, torso_top + 110)], fill=(0, 0, 0), width=7)
+    elif pose in ("thinking", "curious"):
+        # Hand on chin
+        draw.line([(x - 42, torso_top + 25), (x - 20, torso_top + 5), (x, y + 60)], fill=(0, 0, 0), width=7)
+        draw.line([(x + 42, torso_top + 25), (x + 20, torso_top + 80)], fill=(0, 0, 0), width=7)
     else:
-        # Neutral arms
-        draw.line([(x - 45, torso_top + 30), (x - 55, torso_top + 120)], fill=(0, 0, 0), width=7)
-        draw.line([(x + 45, torso_top + 30), (x + 55, torso_top + 120)], fill=(0, 0, 0), width=7)
+        draw.line([(x - 42, torso_top + 25), (x - 55, torso_top + 120)], fill=(0, 0, 0), width=7)
+        draw.line([(x + 42, torso_top + 25), (x + 55, torso_top + 120)], fill=(0, 0, 0), width=7)
+
+
+def _draw_wise_elder(draw: ImageDraw.ImageDraw, x: int, y: int, expr: str = "smile",
+                     pose: str = "standing", looking: str = "right") -> None:
+    """Wise old teacher / monk / elder with glasses and beard."""
+    _draw_stickman_head(draw, x, y, r=74, expr=expr, looking=looking)
+
+    # Glasses
+    g_off = 10 if looking == "right" else -10
+    draw.rectangle([x - 38 + g_off, y - 20, x - 6 + g_off, y + 10], outline=(0, 0, 0), width=3)
+    draw.rectangle([x + 6 + g_off, y - 20, x + 38 + g_off, y + 10], outline=(0, 0, 0), width=3)
+    draw.line([(x - 6 + g_off, y - 5), (x + 6 + g_off, y - 5)], fill=(0, 0, 0), width=3)
+
+    # White Beard
+    draw.polygon([(x - 30, y + 35), (x + 30, y + 35), (x + 15, y + 95), (x, y + 115), (x - 15, y + 95)],
+                 fill=(245, 245, 248), outline=(0, 0, 0), width=3)
+
+    torso_top = y + 74
+    torso_bottom = torso_top + 210
+
+    # Robe / Vest
+    draw.polygon([(x - 52, torso_top + 10), (x + 52, torso_top + 10),
+                  (x + 58, torso_bottom), (x - 58, torso_bottom)],
+                 fill=(180, 140, 85), outline=(0, 0, 0), width=5)
+
+    # Legs & sandals
+    draw.line([(x - 25, torso_bottom), (x - 25, torso_bottom + 130)], fill=(120, 85, 45), width=14)
+    draw.line([(x + 25, torso_bottom), (x + 25, torso_bottom + 130)], fill=(120, 85, 45), width=14)
+    draw.ellipse([x - 42, torso_bottom + 125, x - 8, torso_bottom + 148], fill=(60, 45, 30))
+    draw.ellipse([x + 8, torso_bottom + 125, x + 42, torso_bottom + 148], fill=(60, 45, 30))
+
+    # Arms holding jar or pointing
+    draw.line([(x - 48, torso_top + 25), (x - 90, torso_top + 80), (x - 130, torso_top + 50)], fill=(0, 0, 0), width=7)
+    draw.line([(x + 48, torso_top + 25), (x + 85, torso_top + 75)], fill=(0, 0, 0), width=7)
+
+
+def _draw_worker_farmer(draw: ImageDraw.ImageDraw, x: int, y: int, expr: str = "open",
+                        pose: str = "standing", looking: str = "left") -> None:
+    """Farmer / worker / woodcutter in flannel shirt and denim overalls."""
+    _draw_stickman_head(draw, x, y, r=72, expr=expr, looking=looking)
+    torso_top = y + 72
+    torso_bottom = torso_top + 190
+
+    # Flannel shirt & overalls
+    draw.polygon([(x - 48, torso_top + 10), (x + 48, torso_top + 10),
+                  (x + 42, torso_bottom), (x - 42, torso_bottom)],
+                 fill=(60, 95, 140), outline=(0, 0, 0), width=5)
+    # Shirt collar (plaid red)
+    draw.polygon([(x - 25, torso_top + 10), (x + 25, torso_top + 10), (x, torso_top + 45)], fill=(195, 55, 45))
+
+    # Overalls straps
+    draw.line([(x - 30, torso_top + 10), (x - 20, torso_top + 100)], fill=(35, 65, 105), width=10)
+    draw.line([(x + 30, torso_top + 10), (x + 20, torso_top + 100)], fill=(35, 65, 105), width=10)
+
+    # Legs
+    draw.line([(x - 22, torso_bottom), (x - 22, torso_bottom + 160)], fill=(35, 65, 105), width=18)
+    draw.line([(x + 22, torso_bottom), (x + 22, torso_bottom + 160)], fill=(35, 65, 105), width=18)
+    # Work boots
+    draw.ellipse([x - 42, torso_bottom + 155, x - 5, torso_bottom + 185], fill=(95, 60, 30), outline=(0,0,0), width=2)
+    draw.ellipse([x + 5, torso_bottom + 155, x + 42, torso_bottom + 185], fill=(95, 60, 30), outline=(0,0,0), width=2)
+
+    # Arms
+    draw.line([(x - 45, torso_top + 25), (x - 70, torso_top + 90), (x - 110, torso_top + 60)], fill=(0, 0, 0), width=7)
+    draw.line([(x + 45, torso_top + 25), (x + 65, torso_top + 110)], fill=(0, 0, 0), width=7)
+
+
+def _draw_character(draw: ImageDraw.ImageDraw, x: int, y: int, char_desc: str, action: str, is_left: bool = True) -> None:
+    """Intelligently dispatch to the correct stickman character based on story role."""
+    desc = char_desc.lower()
+    act = action.lower()
+    looking = "right" if is_left else "left"
+
+    expr = "open"
+    if any(k in act for k in ("smile", "happy", "laugh", "glad")):
+        expr = "happy"
+    elif any(k in act for k in ("shock", "surpris", "gasp", "twist", "what")):
+        expr = "shocked"
+    elif any(k in act for k in ("relax", "sleep", "rest", "calm")):
+        expr = "closed"
+    elif any(k in act for k in ("think", "wonder", "confus", "question")):
+        expr = "curious"
+
+    pose = "gesturing" if any(k in act for k in ("talk", "say", "ask", "tell", "explain")) else "standing"
+    if any(k in act for k in ("cross", "disagree", "refuse")):
+        pose = "arms_crossed"
+
+    # Match character role
+    if any(k in desc for k in ("wise", "elder", "old", "monk", "master", "teacher", "professor")):
+        _draw_wise_elder(draw, x, y - 60, expr=expr, pose=pose, looking=looking)
+    elif any(k in desc for k in ("fisherman", "fishing")):
+        fish_pose = "reclining" if is_left and any(k in act for k in ("relax", "reclin", "sit", "rest")) else "standing"
+        _draw_fisherman(draw, x, y + (220 if fish_pose == "reclining" else 0), expr=expr, pose=fish_pose, looking=looking)
+    elif any(k in desc for k in ("businessman", "suit", "rich", "millionaire", "boss", "executive")):
+        _draw_businessman(draw, x, y - 50, expr=expr, pose=pose, looking=looking)
+    elif any(k in desc for k in ("worker", "farmer", "carpenter", "woodcutter", "laborer")):
+        _draw_worker_farmer(draw, x, y - 50, expr=expr, pose=pose, looking=looking)
+    else:
+        # Default: Casual Student / Young Person / Thinker
+        color = (55, 120, 195) if is_left else (210, 60, 60)
+        _draw_casual_student(draw, x, y - 50, expr=expr, pose=pose, looking=looking, color=color)
 
 
 def _draw_fisherman(draw: ImageDraw.ImageDraw, x: int, y: int, expr: str = "happy",
@@ -402,19 +491,12 @@ def render_stickman_scene(scene: dict, scene_index: int, total_scenes: int,
     action = str(scene.get("action", "")).lower()
 
     # Draw Left Character
-    if "fisherman" in char_left or "relax" in char_left or "casual" in char_left:
-        expr = "happy" if "happy" in action or "smile" in action else "closed"
-        _draw_fisherman(draw, 270, 1180, expr=expr, pose="reclining", looking="right")
-    elif "businessman" in char_left or "suit" in char_left:
-        _draw_businessman(draw, 270, 880, expr="talking", pose="gesturing", looking="right")
+    if char_left:
+        _draw_character(draw, 270, 960, char_left, action, is_left=True)
 
     # Draw Right Character
-    if "businessman" in char_right or "suit" in char_right or "rich" in char_right:
-        expr = "shocked" if "shock" in action or "twist" in action else "open"
-        pose = "arms_crossed" if "cross" in action else "talking"
-        _draw_businessman(draw, 780, 780, expr=expr, pose=pose, looking="left")
-    elif "fisherman" in char_right:
-        _draw_fisherman(draw, 780, 1180, expr="happy", pose="sitting", looking="left")
+    if char_right:
+        _draw_character(draw, 780, 960, char_right, action, is_left=False)
 
     # Dynamic Center-Screen Subtitle / Word-Burst (just like @mrstickman_1)
     on_screen_text = scene.get("on_screen_text", "").strip()
