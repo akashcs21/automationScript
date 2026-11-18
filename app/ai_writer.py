@@ -51,26 +51,64 @@ TOPIC_CATEGORIES = [
 ]
 
 
+STICKMAN_STORIES_CATALOG = [
+    "The Fisherman and the Businessman (Time, Freedom vs Endless Chasing)",
+    "The Jar of Life: Rocks, Pebbles and Sand (True Priorities First)",
+    "The $100 Bill in the Dirt (Your Inherent Self-Worth Never Changes)",
+    "The Chinese Bamboo Tree (Delayed Gratification and Deep Hidden Roots)",
+    "The Two Wolves Inside You (The Mindset You Feed Daily Always Wins)",
+    "The Heavy Glass of Water (Why Carrying Daily Stress Paralyzes You)",
+    "The Cracked Water Pot (How Your Imperfections Bring Value to Others)",
+    "The Boiling Frog Syndrome (The Danger of Comfortable Unchanging Ruts)",
+    "The Paradox of Choice (Why Having 100 Options Paralyzes Happiness)",
+    "The Blind Men and the Elephant (Why Nobody Ever Has The Complete Picture)",
+    "The Echo of the Mountain (Whatever You Put Into Life Echoes Right Back)",
+    "The Crab Mentality (Why Unhappy People Always Try to Drag Achievers Down)",
+    "The 1% Daily Shift (How Tiny Daily Habits Compound into Extraordinary Results)",
+    "The Carpenter's Last House (You Live in the Quality of What You Build)",
+    "The Starfish on the Beach (Making a Difference One Step at a Time)",
+    "The Farmer and the Lost Horse (Good Luck or Bad Luck? Who Truly Knows?)",
+    "The Monk and the Heavy Woman (Carrying Old Mental Baggage Everywhere)",
+    "The Two Woodcutters (Sharpening Your Axe vs Mindlessly Working Exhausted)",
+    "The Overthinking Chess Player (Analysis Paralysis and Missing The Opportunity)",
+    "The Empty Teacup (You Must Empty Your Mind of Assumptions to Learn)",
+    "The Golden Goose (Greed Destroying Sustainable Long-Term Abundance)",
+    "The Salt in the Cup vs The Salt in the Lake (Expanding Your Mindset)",
+    "The Butterfly's Cocoon (Why Struggling is What Gives You Strength to Fly)",
+    "The Two Seeds in the Soil (Taking Courageous Risks vs Remaining Safe & Small)",
+    "The Blind Eagle Facing the Storm (Using Adversity to Soar to Greater Heights)",
+    "The Pencil Maker's 5 Lessons (Leaving Your Mark Despite Painful Sharpening)",
+    "The Old Man and the Scorpions (Never Letting Toxicity Change Your Kindness)",
+    "The King and the Cobbler's Shoes (Covering Your Own Feet Instead of the Whole Earth)",
+    "The Weight of Regret (The Agony of What You Left Undone vs Failing Forward)",
+    "The Donkey and the Well (Shaking Off the Dirt and Stepping Right Up)"
+]
+
+
 def _build_stickman_prompt(excluded_topics: list[str]) -> str:
-    excluded = ", ".join(f'"{t}"' for t in excluded_topics) or "none"
+    # Filter out previously used stories to guarantee 100% topic rotation every run
+    excl_lower = [t.strip().lower() for t in excluded_topics]
+    available = []
+    for s in STICKMAN_STORIES_CATALOG:
+        title = s.split("(")[0].strip().lower()
+        if not any(title in ex or ex in title for ex in excl_lower):
+            available.append(s)
+
+    if not available:
+        available = STICKMAN_STORIES_CATALOG
+
+    assigned_story = random.choice(available)
+    excluded = ", ".join(f'"{t}"' for t in excluded_topics[-15:]) or "none"
     return f"""
 You are the executive creator and viral storyteller for "{BRAND_NAME}" — famous 2D Stickman Animated Stories & Psychological Parables (in the iconic style of @mrstickman_1).
 Format: High-retention vertical Facebook Reel (9:16, 1080x1920, 30 FPS, ~35-40 seconds).
 Tone: Calm, wise, compelling storyteller English — conversational, relatable, with an unexpected twist and life/mind lesson.
 Goal: Maximize viral shares, saves, retention, and comments.
 
-TASK:
-Write ONE original, unforgettable Stickman story or philosophical/psychological parable.
-Viral themes to choose from:
-- Time vs Money Parables (e.g. The Fisherman and the Millionaire)
-- Delayed Gratification & Invisible Growth (e.g. The Chinese Bamboo Tree)
-- Priorities & Mental Clarity (e.g. The Jar of Life: Rocks, Pebbles, Sand)
-- Self-Worth & Resilience (e.g. The $100 Bill in the Dirt)
-- Human Psychology & Overthinking (e.g. The 2 AM Trap, The Paradox of Choice)
-- Social Psychology & Envy (e.g. The Crab Mentality, The Echo of Karma)
-- Habit Compounding & Growth (e.g. The 1% Daily Shift, The Two Wolves)
+MANDATORY ASSIGNED STORY FOR THIS REEL:
+Write the script specifically about this story: "{assigned_story}".
 
-STRICTLY AVOID these previously used topics: {excluded}.
+STRICTLY FORBIDDEN (previously published topics): {excluded}.
 
 STORY TIMELINE STRUCTURE (~70–90 words total, paced for ~35s narration):
 1. [0–5s | Setup & Hook]: Introduce the stickman character in an everyday or intriguing situation.

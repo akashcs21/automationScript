@@ -151,6 +151,89 @@ def _draw_room_setting(draw: ImageDraw.ImageDraw) -> None:
     draw.ellipse([536, 276, 544, 284], fill=(220, 50, 50))
 
 
+def _draw_classroom_setting(draw: ImageDraw.ImageDraw) -> None:
+    # Classroom wall
+    for y in range(HEIGHT):
+        if y < 880:
+            draw.line([(0, y), (WIDTH, y)], fill=(235, 238, 232))
+        else:
+            draw.line([(0, y), (WIDTH, y)], fill=(150, 120, 90))
+    draw.line([(0, 880), (WIDTH, 880)], fill=(80, 50, 30), width=8)
+
+    # Big Green Chalkboard
+    board_rect = [80, 160, WIDTH - 80, 660]
+    draw.rectangle(board_rect, fill=(38, 75, 52), outline=(135, 85, 45), width=12)
+    # Chalk drawings on board
+    font = _get_font(36, bold=True)
+    draw.text((140, 220), "PRIORITIES = TIME", font=font, fill=(230, 240, 230))
+    draw.line([(140, 275), (550, 275)], fill=(230, 240, 230), width=3)
+    # Jar drawing with rocks & pebbles on chalkboard
+    draw.arc([720, 240, 860, 300], 180, 360, fill=(240, 245, 240), width=4)
+    draw.line([(720, 270), (720, 540)], fill=(240, 245, 240), width=4)
+    draw.line([(860, 270), (860, 540)], fill=(240, 245, 240), width=4)
+    draw.arc([720, 510, 860, 570], 0, 180, fill=(240, 245, 240), width=4)
+    # Rocks inside jar
+    draw.ellipse([740, 460, 790, 510], fill=(55, 95, 70), outline=(230, 240, 230), width=3)
+    draw.ellipse([780, 450, 840, 510], fill=(55, 95, 70), outline=(230, 240, 230), width=3)
+    draw.ellipse([755, 390, 815, 450], fill=(55, 95, 70), outline=(230, 240, 230), width=3)
+
+
+def _draw_park_setting(draw: ImageDraw.ImageDraw) -> None:
+    # Sky
+    for y in range(700):
+        t = y / 700
+        draw.line([(0, y), (WIDTH, y)], fill=(int(200 * (1 - t) + 240 * t),
+                                              int(225 * (1 - t) + 248 * t),
+                                              int(255 * (1 - t) + 252 * t)))
+    # Distant mountains
+    draw.polygon([(0, 680), (220, 500), (450, 680)], fill=(175, 195, 215))
+    draw.polygon([(350, 680), (600, 460), (850, 680)], fill=(160, 185, 205))
+
+    # Green Grass Hill
+    for y in range(680, HEIGHT):
+        t = (y - 680) / (HEIGHT - 680)
+        draw.line([(0, y), (WIDTH, y)], fill=(int(145 * (1 - t) + 115 * t),
+                                              int(195 * (1 - t) + 165 * t),
+                                              int(95 * (1 - t) + 75 * t)))
+
+    # Big Tree on left
+    draw.polygon([(140, 850), (190, 850), (180, 380), (150, 380)], fill=(110, 75, 45), outline=(0, 0, 0), width=4)
+    draw.ellipse([40, 200, 290, 450], fill=(95, 165, 80), outline=(0, 0, 0), width=5)
+    draw.ellipse([110, 140, 360, 390], fill=(115, 185, 95), outline=(0, 0, 0), width=5)
+
+    # Wooden Park Bench
+    bx = 480
+    by = 750
+    draw.line([(bx, by), (bx + 260, by)], fill=(140, 85, 45), width=14)
+    draw.line([(bx, by + 30), (bx + 260, by + 30)], fill=(140, 85, 45), width=14)
+    draw.line([(bx + 20, by + 40), (bx + 20, by + 120)], fill=(40, 45, 50), width=8)
+    draw.line([(bx + 240, by + 40), (bx + 240, by + 120)], fill=(40, 45, 50), width=8)
+
+
+def _draw_city_setting(draw: ImageDraw.ImageDraw) -> None:
+    # Sky & Sunset
+    for y in range(750):
+        t = y / 750
+        draw.line([(0, y), (WIDTH, y)], fill=(int(245 * (1 - t) + 250 * t),
+                                              int(190 * (1 - t) + 215 * t),
+                                              int(160 * (1 - t) + 195 * t)))
+
+    # City Skyline
+    bldgs = [(30, 340, 150), (200, 280, 180), (400, 380, 160), (580, 250, 200), (800, 360, 180)]
+    for bx, by, bw in bldgs:
+        draw.rectangle([bx, by, bx + bw, 750], fill=(65, 72, 85), outline=(0, 0, 0), width=3)
+        for wy in range(by + 20, 720, 45):
+            for wx in range(bx + 15, bx + bw - 15, 35):
+                draw.rectangle([wx, wy, wx + 16, wy + 24], fill=(255, 235, 160))
+
+    # Road & Sidewalk
+    draw.rectangle([0, 750, WIDTH, 860], fill=(185, 190, 195), outline=(130, 135, 140), width=4)
+    draw.rectangle([0, 860, WIDTH, HEIGHT], fill=(55, 60, 68))
+    # Road dash lines
+    for x in range(40, WIDTH, 120):
+        draw.rectangle([x, 1050, x + 60, 1070], fill=(245, 215, 60))
+
+
 # --- Stickman Character Drawer ---
 
 def _draw_stickman_head(draw: ImageDraw.ImageDraw, cx: int, cy: int, r: int = 75,
@@ -305,6 +388,12 @@ def render_stickman_scene(scene: dict, scene_index: int, total_scenes: int,
         _draw_beach_setting(draw)
     elif any(k in setting for k in ("office", "desk", "building", "work")):
         _draw_office_setting(draw)
+    elif any(k in setting for k in ("classroom", "school", "chalkboard", "board")):
+        _draw_classroom_setting(draw)
+    elif any(k in setting for k in ("park", "tree", "bench", "grass", "outdoor")):
+        _draw_park_setting(draw)
+    elif any(k in setting for k in ("city", "street", "road", "urban")):
+        _draw_city_setting(draw)
     else:
         _draw_room_setting(draw)
 
