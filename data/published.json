@@ -21,7 +21,18 @@
       "status": "published",
       "video_id": "1404851548338136",
       "post_id": "122109781935540744"
+    },
+    {
+      "topic": "The Astonishing Power of the Human Retina",
+      "reel_title": "Your Eyes See MORE Than You Think!",
+      "category": "Human body and psychology",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261118_045647.mp4",
+      "content_hash": "96185f322baa45ba1b83ebe513586987aff76cfd8c53fe64ef97aada7f503c82",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "2728796694201934",
+      "post_id": "122109787857540744"
     }
   ],
-  "last_updated": "2026-11-18T04:37:16Z"
+  "last_updated": "2026-11-18T04:57:40Z"
 }
