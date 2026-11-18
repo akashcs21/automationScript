@@ -54,7 +54,18 @@
       "status": "published",
       "video_id": "1185499737381850",
       "post_id": "122109928353540744"
+    },
+    {
+      "topic": "The Golden Goose (Greed Destroying Sustainable Long-Term Abundance)",
+      "reel_title": "The Golden Goose's Fatal Mistake",
+      "category": "Greed vs. Sustainability",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261118_132033.mp4",
+      "content_hash": "1a3d62b4681b17b293a7df2e4c5c9081fb7bd48a351053876981778ded780502",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "1714040060058707",
+      "post_id": "122109956241540744"
     }
   ],
-  "last_updated": "2026-11-18T12:04:59Z"
+  "last_updated": "2026-11-18T13:21:29Z"
 }
