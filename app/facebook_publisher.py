@@ -113,6 +113,7 @@ class FacebookPublisher:
         params = {
             "upload_phase": "FINISH",
             "video_id": video_id,
+            "video_state": "PUBLISHED",
             "description": description,
             "is_ai_generated": "true" if is_ai_generated else "false",
             "access_token": self.access_token,
