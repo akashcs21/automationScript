@@ -309,16 +309,146 @@ def _draw_brand_reveal(draw: ImageDraw.ImageDraw, center: tuple[int, int],
               fill=_hex_to_rgb(COLOR_ELECTRIC_BLUE))
 
 
+def _fetch_scientific_visual(query: str, theme: str) -> Image.Image | None:
+    """Fetch high-resolution scientific or space imagery from Wikimedia Commons or Pexels."""
+    import urllib.parse
+    from io import BytesIO
+    import requests
+
+    pexels_key = os.environ.get("PEXELS_API_KEY")
+    if pexels_key:
+        try:
+            p_url = f"https://api.pexels.com/v1/search?query={urllib.parse.quote(query)}&orientation=portrait&per_page=3"
+            p_resp = requests.get(p_url, headers={"Authorization": pexels_key}, timeout=8)
+            if p_resp.status_code == 200:
+                photos = p_resp.json().get("photos", [])
+                if photos:
+                    img_url = photos[0].get("src", {}).get("large2x") or photos[0].get("src", {}).get("original")
+                    if img_url:
+                        dl = requests.get(img_url, timeout=12)
+                        if dl.status_code == 200:
+                            return Image.open(BytesIO(dl.content)).convert("RGB")
+        except Exception as exc:
+            logger.debug("Pexels fetch failed: %s", exc)
+
+    candidates = [query]
+    if theme == "brain":
+        candidates += ["human brain neural synapse", "neuroscience brain scan", "neuron activity microscopic"]
+    elif theme == "space" or any(w in query.lower() for w in ("planet", "space", "star", "galaxy", "mars")):
+        candidates += ["hubble space telescope nebula", "deep space galaxy", "astronomy cosmic"]
+    elif theme == "atom":
+        candidates += ["quantum physics atom", "magnetic field physics simulation"]
+    elif theme == "body":
+        candidates += ["human biology cell", "microscopic biology organism"]
+    elif theme == "question":
+        candidates += ["human curious thinking portrait", "deep thinking science"]
+
+    headers = {"User-Agent": "JigyasaLabReels/2.0 (contact@jigyasalab.org)"}
+
+    for term in candidates:
+        try:
+            url = (
+                f"https://commons.wikimedia.org/w/api.php?action=query&generator=search"
+                f"&gsrsearch={urllib.parse.quote(term)}&gsrnamespace=6&gsrlimit=6"
+                f"&prop=pageimages&pithumbsize=1080&format=json"
+            )
+            resp = requests.get(url, headers=headers, timeout=8)
+            if resp.status_code != 200:
+                continue
+            pages = resp.json().get("query", {}).get("pages", {})
+            for page in pages.values():
+                thumb = page.get("thumbnail", {})
+                thumb_url = thumb.get("source")
+                if not thumb_url:
+                    continue
+                lower = thumb_url.lower()
+                title_lower = page.get("title", "").lower()
+                # Exclude non-images
+                if any(bad in title_lower or bad in lower for bad in (".pdf", ".svg", ".webm", ".ogg", ".ogv", ".tif", ".tiff")):
+                    continue
+                if not any(ext in lower for ext in (".jpg", ".jpeg", ".png")):
+                    continue
+                dl = requests.get(thumb_url, headers=headers, timeout=12)
+                if dl.status_code == 200 and len(dl.content) > 15000:
+                    raw_img = Image.open(BytesIO(dl.content)).convert("RGB")
+                    if raw_img.width >= 300 and raw_img.height >= 300:
+                        logger.info("Found scientific visual for '%s': %s", term, page.get("title", ""))
+                        return raw_img
+        except Exception as exc:
+            logger.debug("Wikimedia search failed for '%s': %s", term, exc)
+            continue
+    return None
+
+
+def _render_procedural_base(fi: int, frame_count: int, theme: str, desc_l: str) -> Image.Image:
+    img = _new_space_background(fi, frame_count)
+    draw = ImageDraw.Draw(img)
+    cx, cy = WIDTH // 2, int(HEIGHT * 0.42)
+    planet_radius = int(min(WIDTH, HEIGHT) * 0.16)
+    show_ring = "saturn" in desc_l or "ring" in desc_l
+    _draw_planet(draw, cx, cy, planet_radius, fi, frame_count, ring=show_ring)
+    _draw_light_flare(draw, cx - int(planet_radius * 0.9), cy - int(planet_radius * 0.9), fi)
+    _draw_particles(draw, fi, count=50)
+    return img
+
+
+def _apply_cinematic_styling(raw_img: Image.Image, scene: dict, scene_index: int, total_scenes: int, theme: str) -> Image.Image:
+    # 1. Fit to vertical 1080x1920
+    img = ImageOps.fit(raw_img, (WIDTH, HEIGHT), method=Image.Resampling.LANCZOS)
+
+    # 2. Cinematic Theatrical Color Grading
+    from PIL import ImageEnhance
+    img = ImageEnhance.Contrast(img).enhance(1.18)
+    img = ImageEnhance.Color(img).enhance(1.12)
+
+    # 3. Ambient Sci-Fi Dark Tint (unifies visual color palette)
+    tint = Image.new("RGB", (WIDTH, HEIGHT), (6, 12, 28))
+    img = Image.blend(img, tint, 0.14)
+
+    # 4. Cinematic Vignette (darken perimeter, highlight center)
+    vignette = Image.new("L", (WIDTH, HEIGHT), 0)
+    vdraw = ImageDraw.Draw(vignette)
+    vdraw.ellipse([(-180, -180), (WIDTH + 180, HEIGHT + 180)], fill=255)
+    vignette = vignette.filter(ImageFilter.GaussianBlur(110))
+    black_bg = Image.new("RGB", (WIDTH, HEIGHT), (4, 6, 14))
+    img = Image.composite(img, black_bg, vignette)
+
+    draw = ImageDraw.Draw(img)
+
+    # 5. Glowing particle dust motes
+    _draw_particles(draw, scene_index * 15, count=35)
+
+    # 6. Scene overlays
+    cx = WIDTH // 2
+    if theme == "brain":
+        _draw_diagram_brain(draw, (cx, int(HEIGHT * 0.70)), 20)
+    elif theme == "question":
+        _draw_question_badge(draw, (cx, int(HEIGHT * 0.70)), 15)
+    elif theme == "brand":
+        _draw_brand_reveal(draw, (cx, int(HEIGHT * 0.70)), 25)
+    elif theme == "atom":
+        _draw_diagram_atom(draw, (cx, int(HEIGHT * 0.70)), 10)
+    elif theme == "orbit":
+        _draw_diagram_orbit(draw, (cx, int(HEIGHT * 0.70)), 10)
+
+    # 7. Animated typography / title card
+    on_screen_text = scene.get("on_screen_text", "")
+    highlight = scene.get("highlight_word") if scene.get("highlight") else None
+    if on_screen_text:
+        _draw_typography(draw, on_screen_text, (cx, int(HEIGHT * 0.86)),
+                         30, 60, highlight_word=highlight)
+
+    return img
+
+
 def render_scene(scene: dict, scene_index: int, total_scenes: int,
                  output_dir: Path = FRAMES_DIR) -> Path:
-    """Render all frames for one scene. Returns the scene frame directory."""
-    duration = float(scene.get("duration_seconds", 6))
-    frame_count = max(2, int(round(duration * FPS)))
+    """Render cinematic base image and frames for one scene."""
     scene_dir = output_dir / f"scene_{scene_index:02d}"
     scene_dir.mkdir(parents=True, exist_ok=True)
 
     description = scene.get("description", "")
-    on_screen_text = scene.get("on_screen_text", "")
+    visual_query = scene.get("visual_query") or scene.get("on_screen_text") or description
     desc_l = description.lower()
 
     # Pick visual theme from the description.
@@ -336,49 +466,28 @@ def render_scene(scene: dict, scene_index: int, total_scenes: int,
     elif any(k in desc_l for k in ("body", "human", "organ", "cell", "dna", "heart")):
         theme = "body"
 
-    logger.info("Rendering scene %d/%d: %s frames (theme=%s)",
-                scene_index + 1, total_scenes, frame_count, theme)
+    logger.info("Generating cinematic scene %d/%d (theme=%s, query='%s')",
+                scene_index + 1, total_scenes, theme, visual_query[:40])
 
-    cx, cy = WIDTH // 2, int(HEIGHT * 0.42)
-    planet_radius = int(min(WIDTH, HEIGHT) * 0.16)
+    # 1. Fetch authentic scientific visual or fallback to procedural base
+    raw_img = _fetch_scientific_visual(visual_query, theme)
+    if not raw_img:
+        logger.info("Using procedural 3D visual fallback for scene %d", scene_index + 1)
+        raw_img = _render_procedural_base(fi=scene_index * 12, frame_count=60, theme=theme, desc_l=desc_l)
 
-    for fi in range(frame_count):
-        img = _new_space_background(fi, frame_count)
-        draw = ImageDraw.Draw(img)
+    # 2. Apply cinematic color grade, vignette & theatrical branding
+    cinematic_img = _apply_cinematic_styling(raw_img, scene, scene_index, total_scenes, theme)
 
-        # Rotating planet (electric blue, sometimes with gold ring).
-        show_ring = "saturn" in desc_l or "ring" in desc_l
-        _draw_planet(draw, cx, cy, planet_radius, fi, frame_count, ring=show_ring)
+    # 3. Save master high-resolution cinematic base image
+    base_path = scene_dir / "cinematic_base.png"
+    cinematic_img.save(base_path, quality=95)
 
-        # Light flare near planet.
-        _draw_light_flare(draw, cx - int(planet_radius * 0.9),
-                          cy - int(planet_radius * 0.9), fi)
+    # Save initial preview frames for backward compatibility
+    cinematic_img.save(scene_dir / "frame_0000.png", quality=92)
+    cinematic_img.save(scene_dir / "frame_0001.png", quality=92)
 
-        # Moving particles.
-        _draw_particles(draw, fi, count=50)
-
-        # Theme diagram over the lower half.
-        diagram_center = (cx, int(HEIGHT * 0.72))
-        if theme == "brain":
-            _draw_diagram_brain(draw, diagram_center, fi)
-        elif theme == "question":
-            _draw_question_badge(draw, diagram_center, fi)
-        elif theme == "brand":
-            _draw_brand_reveal(draw, diagram_center, fi)
-        elif theme == "atom":
-            _draw_diagram_atom(draw, diagram_center, fi)
-        elif theme == "orbit":
-            _draw_diagram_orbit(draw, diagram_center, fi)
-
-        # Animated typography.
-        highlight = scene.get("highlight_word") if scene.get("highlight") else None
-        _draw_typography(draw, on_screen_text, (cx, int(HEIGHT * 0.86)),
-                         fi, frame_count, highlight_word=highlight)
-
-        img.save(scene_dir / f"frame_{fi:04d}.png", quality=92)
-
-    log_event("scene_rendered", scene=scene_index, frames=frame_count,
-              theme=theme, output=str(scene_dir))
+    log_event("scene_rendered", scene=scene_index, theme=theme,
+              cinematic_base=str(base_path))
     return scene_dir
 
 

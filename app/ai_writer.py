@@ -96,7 +96,7 @@ Return ONLY valid JSON (no markdown fences, no prose). Schema:
   "audience_question": "short prominent question for on-screen prompt (e.g. 'HOW MANY HOURS DO YOU SLEEP? 👇')",
   "narration_script": "80–95 words of natural energetic English following the 7-stage timeline",
   "scenes": [
-    {{"scene": 1, "description": "visual description", "duration_seconds": 5, "on_screen_text": "short bold text", "highlight_word": "KEYWORD"}},
+    {{"scene": 1, "description": "visual description", "visual_query": "2-4 search keywords for authentic scientific photography or 3d render", "camera_motion": "zoom_in|zoom_out|pan_up|pan_down", "duration_seconds": 5, "on_screen_text": "short bold text", "highlight_word": "KEYWORD"}},
     ... (6–7 scenes, summing to 40–45 seconds)
   ],
   "subtitle_segments": [
@@ -248,6 +248,14 @@ def _validate_script(script: dict) -> bool:
     if not hashtags:
         hashtags = ["#JigyasaLab", "#Science", "#Knowledge"]
     script["hashtags"] = hashtags[:5]
+
+    # Auto-normalize scenes with visual_query and camera_motion
+    motions = ["zoom_in", "pan_up", "zoom_in", "zoom_out", "pan_down", "zoom_in", "zoom_out"]
+    for idx, scene in enumerate(scenes):
+        if not scene.get("visual_query"):
+            scene["visual_query"] = scene.get("on_screen_text") or script.get("topic", "science")
+        if not scene.get("camera_motion"):
+            scene["camera_motion"] = motions[idx % len(motions)]
 
     # Auto-normalize caption
     if not script.get("facebook_caption"):

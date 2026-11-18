@@ -189,8 +189,79 @@ def _fit_duration(video_path: Path, min_d: float = DURATION_MIN,
 
 
 def _encode_scene(scene_index: int, frame_dir: Path, duration: float,
-                  output_mp4: Path) -> None:
-    """Encode one scene's frame sequence into a silent MP4 with fade-out."""
+                  output_mp4: Path, camera_motion: str = "auto") -> None:
+    """Encode one scene's cinematic base image or frame sequence into an MP4 with camera motion."""
+    base_img = frame_dir / "cinematic_base.png"
+    if not base_img.exists():
+        base_img = frame_dir / "base.png"
+
+    if base_img.exists():
+        motion = camera_motion
+        if motion == "auto" or not motion:
+            motions = ["zoom_in", "pan_up", "zoom_in", "zoom_out", "pan_down", "zoom_in", "zoom_out"]
+            motion = motions[scene_index % len(motions)]
+
+        total_frames = max(30, int(round(duration * FPS)))
+
+        if motion == "zoom_in":
+            # Smooth 3D push-in from 1.0 to 1.16
+            z_step = 0.16 / total_frames
+            pan_filter = (f"scale=1200:2133,zoompan=z='min(zoom+{z_step:.6f},1.16)':"
+                          f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={total_frames}:"
+                          f"s={WIDTH}x{HEIGHT}:fps={FPS}")
+        elif motion == "zoom_out":
+            # Smooth pull-back from 1.16 to 1.0
+            z_step = 0.16 / total_frames
+            pan_filter = (f"scale=1200:2133,zoompan=z='max(1.16-{z_step:.6f}*on,1.0)':"
+                          f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={total_frames}:"
+                          f"s={WIDTH}x{HEIGHT}:fps={FPS}")
+        elif motion == "pan_up":
+            # Vertical tilt upward
+            pan_filter = (f"scale=1200:2133,zoompan=z=1.12:x='iw/2-(iw/zoom/2)':"
+                          f"y='(ih-ih/zoom)*(1-on/{total_frames})':d={total_frames}:"
+                          f"s={WIDTH}x{HEIGHT}:fps={FPS}")
+        elif motion == "pan_down":
+            # Vertical tilt downward
+            pan_filter = (f"scale=1200:2133,zoompan=z=1.12:x='iw/2-(iw/zoom/2)':"
+                          f"y='(ih-ih/zoom)*(on/{total_frames})':d={total_frames}:"
+                          f"s={WIDTH}x{HEIGHT}:fps={FPS}")
+        else:
+            z_step = 0.12 / total_frames
+            pan_filter = (f"scale=1200:2133,zoompan=z='min(zoom+{z_step:.6f},1.12)':"
+                          f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={total_frames}:"
+                          f"s={WIDTH}x{HEIGHT}:fps={FPS}")
+
+        vf = f"{pan_filter},fade=t=out:st={max(0.0, duration - 1.0)}:d=1,{_get_scale_crop()}"
+        cmd = [
+            FFMPEG, "-y",
+            "-loop", "1",
+            "-i", str(base_img),
+            "-vf", vf,
+            "-c:v", VIDEO_CODEC, "-preset", "veryfast", "-pix_fmt", PIXEL_FORMAT,
+            "-r", str(FPS), "-t", str(duration),
+            "-an", str(output_mp4),
+        ]
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+        if res.returncode == 0 and output_mp4.exists():
+            return
+
+        logger.warning("zoompan encode failed (%s); trying simple static loop", res.stderr.strip()[-300:])
+        fallback_vf = f"fade=t=out:st={max(0.0, duration - 1.0)}:d=1,{_get_scale_crop()}"
+        cmd_fallback = [
+            FFMPEG, "-y",
+            "-loop", "1",
+            "-i", str(base_img),
+            "-vf", fallback_vf,
+            "-c:v", VIDEO_CODEC, "-preset", "veryfast", "-pix_fmt", PIXEL_FORMAT,
+            "-r", str(FPS), "-t", str(duration),
+            "-an", str(output_mp4),
+        ]
+        res2 = subprocess.run(cmd_fallback, capture_output=True, text=True, timeout=300)
+        if res2.returncode == 0 and output_mp4.exists():
+            return
+        raise VideoError(f"Scene {scene_index} encode failed: {res2.stderr.strip()[-800:]}")
+
+    # Fallback to PNG sequence if no cinematic_base.png
     cmd = [
         FFMPEG, "-y",
         "-framerate", str(FPS),
@@ -279,8 +350,9 @@ def render_reel(scenes: list[dict], frame_dirs: list[Path],
     scene_videos: list[Path] = []
     for i, (scene, sdir) in enumerate(zip(scenes, frame_dirs)):
         duration = float(scene.get("duration_seconds", 6))
+        motion = scene.get("camera_motion", "auto")
         scene_v = OUTPUT_DIR / f"scene_{i:02d}.mp4"
-        _encode_scene(i, sdir, duration, scene_v)
+        _encode_scene(i, sdir, duration, scene_v, camera_motion=motion)
         scene_videos.append(scene_v)
         log_event("scene_encoded", scene=i, duration=duration,
                   output=str(scene_v))
