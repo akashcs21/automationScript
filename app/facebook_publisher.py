@@ -137,7 +137,27 @@ class FacebookPublisher:
         logger.error("Publish %s failed: %s", phase, detail)
         raise PublishError(f"Meta Graph API {phase} failed: {detail}")
 
-    def publish_reel(self, video_path: Path, description: str) -> dict[str, Any]:
+    def post_comment(self, video_id: str, message: str) -> dict[str, Any] | None:
+        """Post an interactive first comment / poll on the published Reel."""
+        if not message or not video_id:
+            return None
+        url = f"{GRAPH_BASE_URL}/{video_id}/comments"
+        try:
+            resp = requests.post(url, data={
+                "message": message,
+                "access_token": self.access_token,
+            }, timeout=30)
+            if resp.status_code in (200, 201):
+                logger.info("Interactive pinned comment posted to video %s", video_id)
+                return resp.json()
+            else:
+                logger.warning("Could not post comment (HTTP %d): %s", resp.status_code, resp.text[:200])
+        except Exception as exc:
+            logger.warning("Failed to post comment: %s", exc)
+        return None
+
+    def publish_reel(self, video_path: Path, description: str,
+                     comment_text: str | None = None) -> dict[str, Any]:
         """Run the full two-stage flow. Never blindly retries an uncertain step.
 
         Returns a record dict with video_id / post_id / status for the log.
@@ -163,6 +183,11 @@ class FacebookPublisher:
             record["status"] = "published"
             log_event("reel_published", video_id=record["video_id"],
                       post_id=record["post_id"])
+
+            if comment_text:
+                time.sleep(2)
+                self.post_comment(record["video_id"], comment_text)
+
             return record
 
         except PublishError as exc:

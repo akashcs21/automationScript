@@ -53,48 +53,66 @@ TOPIC_CATEGORIES = [
 def _build_prompt(excluded_topics: list[str]) -> str:
     excluded = ", ".join(f'"{t}"' for t in excluded_topics) or "none"
     return f"""
-You are the head writer for "{BRAND_NAME}" — {BRAND_TAGLINE}.
-Audience: Global ({LANGUAGE}). Reel duration: 35–45 seconds (vertical 9:16).
-Brand tone: cinematic, curious, scientific, honest — no clickbait, no hype.
+You are the executive showrunner and science writer for "{BRAND_NAME}" — {BRAND_TAGLINE}.
+Format: High-retention vertical Facebook Reel (9:16, 1080x1920, 30 FPS, ~40 seconds).
+Tone: Cinematic, suspenseful, energetic, conversational English — hook-driven, scientifically accurate, dramatic pacing.
+Goal: Maximize genuine engagement, watch time, shares, saves, and comments.
 
-TASK: Write ONE original daily Reel script about a fresh topic from these categories:
+TASK:
+Write ONE original, scroll-stopping scientific Reel script about a fresh, fascinating topic from these categories:
 {chr(10).join("- " + c for c in TOPIC_CATEGORIES)}
 
 STRICTLY AVOID these previously used topics: {excluded}.
-Do not repeat or near-repeat any of them. Pick a genuinely different fact.
 
-OUTPUT: Return ONLY valid JSON (no markdown fences, no prose). Keys exactly:
+VOICEOVER TIMELINE STRUCTURE (7 Distinct Stages, ~80-95 words total):
+1. [0–4 sec | Powerful hook]: One surprising, irresistible question or revelation (e.g. "What if you stayed awake for 7 days straight? What would happen to your brain?")
+2. [4–10 sec | Build curiosity]: Immediate escalation and initial intriguing fact.
+3. [10–17 sec | Escalate]: Deeper consequences, memory/concentration struggle, or scientific transformation.
+4. [17–24 sec | Surprising fact]: The most jaw-dropping or counter-intuitive discovery/detail (e.g. hallucinations, physical shifts).
+5. [24–31 sec | Biological / Cosmic mechanism]: Why the human body, brain, or universe behaves this way and why recovery is essential.
+6. [31–36 sec | Audience interaction question]: Direct, conversational question asking the viewer to participate (e.g. "Be honest: how many hours do you sleep every night?").
+7. [36–40 sec | CTA]: "Comment your answer below, and follow Jigyasa Lab for more mind-blowing science!"
+
+SCENE BREAKDOWN (Exactly 6–7 scenes, matching the 7 stages):
+- Scene 1 (Hook): Dramatic close-up or visual anomaly with dark cinematic atmosphere.
+- Scene 2 (Curiosity): Contextual struggle, action, or tension.
+- Scene 3 (Scientific 3D animation): Biological, neurological, anatomical, or planetary mechanism (e.g. 3D brain/atom/cell/space).
+- Scene 4 (Surreal / Mind-bending): Vivid visual representation of extreme state or phenomenon.
+- Scene 5 (Mechanism / Recovery): Core restorative process or cosmic law.
+- Scene 6 (Audience Question): Person looking directly at camera with large animated question mark and prominent prompt text: e.g. "HOW MANY HOURS DO YOU SLEEP? 👇".
+- Scene 7 (Brand Outro): JIGYASA LAB logo reveal with glowing electric blue scientific particles.
+
+SUBTITLES WITH YELLOW KEYWORD HIGHLIGHTS:
+- Break the narration into 7–10 synchronized subtitle segments covering 0.0s to ~40.0s.
+- For 3 to 5 power keywords/phrases (e.g. "24 HOURS", "BRAIN", "HALLUCINATIONS", "SLEEP"), set "highlight": true so they burn in bold electric yellow!
+
+OUTPUT FORMAT:
+Return ONLY valid JSON (no markdown fences, no prose). Schema:
 {{
-  "topic": "specific narrow topic (e.g. 'Why Venus rotates backward')",
-  "category": "one of the categories above",
+  "topic": "specific narrow topic (e.g. 'What Happens If You Never Sleep?')",
+  "category": "one of the categories",
   "reel_title": "short scroll-stopping title (max 8 words)",
-  "opening_hook": "first 2 seconds — one surprising sentence, max 18 words",
-  "narration_script": "75–100 words of natural spoken English, hook to strong ending",
+  "opening_hook": "first 2-4 seconds hook sentence",
+  "audience_question": "short prominent question for on-screen prompt (e.g. 'HOW MANY HOURS DO YOU SLEEP? 👇')",
+  "narration_script": "80–95 words of natural energetic English following the 7-stage timeline",
   "scenes": [
-    {{"scene": 1, "description": "visual description for animated scene", "duration_seconds": 5, "on_screen_text": "short bold text"}},
-    ... (5–7 scenes, durations sum to 35–45s)
+    {{"scene": 1, "description": "visual description", "duration_seconds": 5, "on_screen_text": "short bold text", "highlight_word": "KEYWORD"}},
+    ... (6–7 scenes, summing to 40–45 seconds)
   ],
   "subtitle_segments": [
-    {{"start": 0.0, "end": 2.5, "text": "subtitle text", "highlight": false}},
-    ... (timestamps cover the full narration, synced to scenes)
+    {{"start": 0.0, "end": 3.8, "text": "What if you stayed awake for 7 days straight?", "highlight": false}},
+    {{"start": 3.8, "end": 7.0, "text": "After just 24 hours without sleep...", "highlight": true}},
+    ...
   ],
-  "facebook_caption": "engaging caption ending with a subtle follow CTA",
-  "hashtags": ["#JigyasaLab", "#Science", "..."] (3–5 tags),
+  "facebook_caption": "Engaging caption with emojis, science explanation, the viewer question, and follow CTA",
+  "pinned_comment": "Interactive multiple-choice poll: 'Quick check! 👇 A) Less than 5h B) 5–6h C) 7–8h D) More than 8h. Which one describes you?'",
+  "story_poll": "Story poll question with Option A and Option B",
+  "hashtags": ["#JigyasaLab", "#Science", "#BrainScience", "#MindBlowingFacts", "#HumanBody"],
   "factual_claims": [
-    {{"claim": "checkable factual statement", "source_url": "https://credible.source/...", "confidence": "high"}}
+    {{"claim": "checkable scientific statement", "source_url": "https://en.wikipedia.org/wiki/...", "confidence": "high"}}
   ],
-  "caveats": ["any scientific uncertainty or 'scientists believe' phrasing needed"]
+  "caveats": ["scientific nuance or individual variance"]
 }}
-
-RULES:
-- Hook within the first 2 seconds.
-- Narration approx {NARRATION_WORDS_MIN}–{NARRATION_WORDS_MAX} words.
-- No fabricated scientific facts. No misleading clickbait.
-- Natural spoken English. Strong ending + subtle follow CTA.
-- Every factual claim needs a real, credible source URL (NASA, ESA, peer-reviewed journals, universities, museums, reputable science publications).
-- Distinguish established evidence from hypothetical scenarios in caveats.
-- Scene descriptions must be original, animatable motion-graphics briefs (space backgrounds, planets, particles, diagrams, light effects).
-- If you cannot verify a claim, mark confidence "low" or omit the claim — do not fabricate.
 """
 
 

@@ -233,7 +233,8 @@ def run() -> int:
         try:
             publisher = facebook_publisher.FacebookPublisher()
             result = publisher.publish_reel(video_path,
-                                            script.get("facebook_caption", ""))
+                                            script.get("facebook_caption", ""),
+                                            comment_text=script.get("pinned_comment"))
             publish_record.update({
                 "status": "published",
                 "video_id": result.get("video_id"),

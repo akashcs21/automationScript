@@ -253,6 +253,62 @@ def _draw_diagram_atom(draw: ImageDraw.ImageDraw, center: tuple[int, int],
         draw.ellipse([px - 6, py - 6, px + 6, py + 6], fill=_hex_to_rgb(COLOR_ELECTRIC_BLUE))
 
 
+def _draw_diagram_brain(draw: ImageDraw.ImageDraw, center: tuple[int, int],
+                        frame_index: int) -> None:
+    """Animated neural network / brain synaptic pulses."""
+    cx, cy = center
+    nodes = [
+        (-80, -60), (-40, -90), (0, -100), (40, -90), (80, -60),
+        (-100, -20), (-50, -30), (0, -40), (50, -30), (100, -20),
+        (-90, 30), (-40, 20), (0, 10), (40, 20), (90, 30),
+        (-60, 80), (-20, 70), (20, 70), (60, 80)
+    ]
+    for i, (x1, y1) in enumerate(nodes):
+        for j, (x2, y2) in enumerate(nodes[i + 1:], i + 1):
+            dist = math.hypot(x2 - x1, y2 - y1)
+            if dist < 85:
+                pulse = 0.5 + 0.5 * math.sin(frame_index / 8 + i * 0.7)
+                alpha_val = int(40 + 80 * pulse)
+                draw.line([(cx + x1, cy + y1), (cx + x2, cy + y2)],
+                          fill=(alpha_val // 2, alpha_val, int(alpha_val * 1.5)), width=2)
+    for i, (nx, ny) in enumerate(nodes):
+        firing = math.sin(frame_index / 6 + i * 1.2) > 0.4
+        color = _hex_to_rgb(COLOR_YELLOW) if firing else _hex_to_rgb(COLOR_ELECTRIC_BLUE)
+        r = 8 if firing else 5
+        draw.ellipse([cx + nx - r, cy + ny - r, cx + nx + r, cy + ny + r], fill=color)
+
+
+def _draw_question_badge(draw: ImageDraw.ImageDraw, center: tuple[int, int],
+                         frame_index: int) -> None:
+    """Prominent animated interaction card with pulsing question prompt."""
+    cx, cy = center
+    pulse = 1.0 + 0.05 * math.sin(frame_index / 5)
+    bw, bh = int(340 * pulse), int(90 * pulse)
+    draw.rounded_rectangle([cx - bw, cy - bh, cx + bw, cy + bh], radius=24,
+                           fill=(10, 25, 55), outline=_hex_to_rgb(COLOR_ELECTRIC_BLUE), width=3)
+    q_font = _font(int(46 * pulse), bold=True)
+    draw.text((cx, cy), "❓ COMMENT YOUR ANSWER 👇", font=q_font, anchor="mm",
+              fill=_hex_to_rgb(COLOR_YELLOW))
+
+
+def _draw_brand_reveal(draw: ImageDraw.ImageDraw, center: tuple[int, int],
+                       frame_index: int) -> None:
+    """Scientific particle burst with JIGYASA LAB brand reveal."""
+    cx, cy = center
+    pulse = 0.5 + 0.5 * math.sin(frame_index / 8)
+    r = int(140 + 20 * pulse)
+    draw.ellipse([cx - r, cy - r, cx + r, cy + r],
+                 outline=_hex_to_rgb(COLOR_ELECTRIC_BLUE), width=3)
+    inner_r = int(r * 0.8)
+    draw.ellipse([cx - inner_r, cy - inner_r, cx + inner_r, cy + inner_r],
+                 outline=_hex_to_rgb(COLOR_GOLD), width=1)
+    b_font = _font(54, bold=True)
+    draw.text((cx, cy - 25), "JIGYASA LAB", font=b_font, anchor="mm", fill=(255, 255, 255))
+    s_font = _font(28, bold=False)
+    draw.text((cx, cy + 35), "EXPLORE • QUESTION", font=s_font, anchor="mm",
+              fill=_hex_to_rgb(COLOR_ELECTRIC_BLUE))
+
+
 def render_scene(scene: dict, scene_index: int, total_scenes: int,
                  output_dir: Path = FRAMES_DIR) -> Path:
     """Render all frames for one scene. Returns the scene frame directory."""
@@ -267,11 +323,17 @@ def render_scene(scene: dict, scene_index: int, total_scenes: int,
 
     # Pick visual theme from the description.
     theme = "space"
-    if any(k in desc_l for k in ("atom", "electron", "nucleus", "particle", "physics")):
+    if any(k in desc_l for k in ("brain", "mind", "neuron", "synapse", "memory", "thought", "psychology", "hallucination", "sleep")):
+        theme = "brain"
+    elif any(k in desc_l for k in ("question", "comment", "how many", "poll", "what do you", "hours do you", "be honest")):
+        theme = "question"
+    elif any(k in desc_l for k in ("logo", "jigyasa", "outro", "follow", "reveal")):
+        theme = "brand"
+    elif any(k in desc_l for k in ("atom", "electron", "nucleus", "particle", "physics")):
         theme = "atom"
     elif any(k in desc_l for k in ("orbit", "solar", "planet around", "revolve")):
         theme = "orbit"
-    elif any(k in desc_l for k in ("body", "human", "organ", "cell", "dna", "heart", "brain")):
+    elif any(k in desc_l for k in ("body", "human", "organ", "cell", "dna", "heart")):
         theme = "body"
 
     logger.info("Rendering scene %d/%d: %s frames (theme=%s)",
@@ -297,7 +359,13 @@ def render_scene(scene: dict, scene_index: int, total_scenes: int,
 
         # Theme diagram over the lower half.
         diagram_center = (cx, int(HEIGHT * 0.72))
-        if theme == "atom":
+        if theme == "brain":
+            _draw_diagram_brain(draw, diagram_center, fi)
+        elif theme == "question":
+            _draw_question_badge(draw, diagram_center, fi)
+        elif theme == "brand":
+            _draw_brand_reveal(draw, diagram_center, fi)
+        elif theme == "atom":
             _draw_diagram_atom(draw, diagram_center, fi)
         elif theme == "orbit":
             _draw_diagram_orbit(draw, diagram_center, fi)
