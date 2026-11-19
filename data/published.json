@@ -76,7 +76,18 @@
       "status": "published",
       "video_id": "1121169427196581",
       "post_id": "122110161315540744"
+    },
+    {
+      "topic": "The Butterfly's Cocoon",
+      "reel_title": "The Secret to Unlocking Your Strength",
+      "category": "Personal Growth",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261119_224551.mp4",
+      "content_hash": "0ccdb38d451d2ed9cd7675d075442bfb7adb1d91a218217ac0be851bac1ee95c",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "975807028583962",
+      "post_id": "122110612689540744"
     }
   ],
-  "last_updated": "2026-11-18T22:41:02Z"
+  "last_updated": "2026-11-19T22:46:51Z"
 }

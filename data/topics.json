@@ -61,7 +61,13 @@
       "content_hash": "943fe447c634ada3154e69a281d5440a70b2bb7825ff89a6dcc60cb5e3219a88",
       "status": "published",
       "used_at": "2026-11-18T22:41:02.467825+00:00"
+    },
+    {
+      "topic": "The Butterfly's Cocoon",
+      "content_hash": "0ccdb38d451d2ed9cd7675d075442bfb7adb1d91a218217ac0be851bac1ee95c",
+      "status": "published",
+      "used_at": "2026-11-19T22:46:51.270419+00:00"
     }
   ],
-  "last_updated": "2026-11-18T22:41:02.467842+00:00"
+  "last_updated": "2026-11-19T22:46:51.270434+00:00"
 }
