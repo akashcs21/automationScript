@@ -73,7 +73,13 @@
       "content_hash": "26271e987c0e1db7eed844f5f74fd4a99f3c35c15d0170115b3b8a733de2d59d",
       "status": "published",
       "used_at": "2026-11-20T12:01:12.743915+00:00"
+    },
+    {
+      "topic": "The Blind Eagle Facing the Storm",
+      "content_hash": "c2c461760f8b67e72475b5dee7d081fc093ab75b65210ccb0e2c68b8f339f5b2",
+      "status": "published",
+      "used_at": "2026-11-20T22:18:45.109102+00:00"
     }
   ],
-  "last_updated": "2026-11-20T12:01:12.743935+00:00"
+  "last_updated": "2026-11-20T22:18:45.109116+00:00"
 }

@@ -98,7 +98,18 @@
       "status": "published",
       "video_id": "1841524636975064",
       "post_id": "122110875687540744"
+    },
+    {
+      "topic": "The Blind Eagle Facing the Storm",
+      "reel_title": "Blind Eagle's Stormy Secret",
+      "category": "Adversity & Growth",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261120_221735.mp4",
+      "content_hash": "c2c461760f8b67e72475b5dee7d081fc093ab75b65210ccb0e2c68b8f339f5b2",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "1192333656451614",
+      "post_id": "122111094099540744"
     }
   ],
-  "last_updated": "2026-11-20T12:01:12Z"
+  "last_updated": "2026-11-20T22:18:45Z"
 }
