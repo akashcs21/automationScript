@@ -87,7 +87,18 @@
       "status": "published",
       "video_id": "975807028583962",
       "post_id": "122110612689540744"
+    },
+    {
+      "topic": "The Two Seeds in the Soil",
+      "reel_title": "The Seed's Big Secret",
+      "category": "Risk vs. Safety",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261120_120004.mp4",
+      "content_hash": "26271e987c0e1db7eed844f5f74fd4a99f3c35c15d0170115b3b8a733de2d59d",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "1841524636975064",
+      "post_id": "122110875687540744"
     }
   ],
-  "last_updated": "2026-11-19T22:46:51Z"
+  "last_updated": "2026-11-20T12:01:12Z"
 }
