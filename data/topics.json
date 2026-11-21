@@ -79,7 +79,13 @@
       "content_hash": "c2c461760f8b67e72475b5dee7d081fc093ab75b65210ccb0e2c68b8f339f5b2",
       "status": "published",
       "used_at": "2026-11-20T22:18:45.109102+00:00"
+    },
+    {
+      "topic": "The Pencil Maker's 5 Lessons",
+      "content_hash": "e03db0052c775da125b45ed57a61c3c9031f01809ee29efa0d29341a2547dc92",
+      "status": "published",
+      "used_at": "2026-11-21T11:35:12.735855+00:00"
     }
   ],
-  "last_updated": "2026-11-20T22:18:45.109116+00:00"
+  "last_updated": "2026-11-21T11:35:12.735869+00:00"
 }

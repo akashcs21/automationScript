@@ -109,7 +109,18 @@
       "status": "published",
       "video_id": "1192333656451614",
       "post_id": "122111094099540744"
+    },
+    {
+      "topic": "The Pencil Maker's 5 Lessons",
+      "reel_title": "Painful Sharpening, Lasting Mark",
+      "category": "Personal Growth",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261121_113405.mp4",
+      "content_hash": "e03db0052c775da125b45ed57a61c3c9031f01809ee29efa0d29341a2547dc92",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "29849049554687111",
+      "post_id": "122111334153540744"
     }
   ],
-  "last_updated": "2026-11-20T22:18:45Z"
+  "last_updated": "2026-11-21T11:35:12Z"
 }
