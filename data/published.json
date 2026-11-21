@@ -120,7 +120,18 @@
       "status": "published",
       "video_id": "29849049554687111",
       "post_id": "122111334153540744"
+    },
+    {
+      "topic": "The Old Man and the Scorpions",
+      "reel_title": "Don't Let Scorpions Sting Your Kindness!",
+      "category": "Toxicity and Kindness",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261121_205838.mp4",
+      "content_hash": "22e6b271646bcf6ded00e4b7d96d024110e3e7d44730aacb0a7a302df00219c7",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "1792745378469845",
+      "post_id": "122111497761540744"
     }
   ],
-  "last_updated": "2026-11-21T11:35:12Z"
+  "last_updated": "2026-11-21T20:59:25Z"
 }

@@ -85,7 +85,13 @@
       "content_hash": "e03db0052c775da125b45ed57a61c3c9031f01809ee29efa0d29341a2547dc92",
       "status": "published",
       "used_at": "2026-11-21T11:35:12.735855+00:00"
+    },
+    {
+      "topic": "The Old Man and the Scorpions",
+      "content_hash": "22e6b271646bcf6ded00e4b7d96d024110e3e7d44730aacb0a7a302df00219c7",
+      "status": "published",
+      "used_at": "2026-11-21T20:59:25.891930+00:00"
     }
   ],
-  "last_updated": "2026-11-21T11:35:12.735869+00:00"
+  "last_updated": "2026-11-21T20:59:25.891946+00:00"
 }
