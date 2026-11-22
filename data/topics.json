@@ -91,7 +91,13 @@
       "content_hash": "22e6b271646bcf6ded00e4b7d96d024110e3e7d44730aacb0a7a302df00219c7",
       "status": "published",
       "used_at": "2026-11-21T20:59:25.891930+00:00"
+    },
+    {
+      "topic": "The King and the Cobbler's Shoes",
+      "content_hash": "67223b025fba16191429ea295cbbaf7baeb8b4a3c7a3f589010be0d5df824838",
+      "status": "published",
+      "used_at": "2026-11-22T21:10:24.992967+00:00"
     }
   ],
-  "last_updated": "2026-11-21T20:59:25.891946+00:00"
+  "last_updated": "2026-11-22T21:10:24.992985+00:00"
 }

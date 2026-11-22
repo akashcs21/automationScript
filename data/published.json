@@ -131,7 +131,18 @@
       "status": "published",
       "video_id": "1792745378469845",
       "post_id": "122111497761540744"
+    },
+    {
+      "topic": "The King and the Cobbler's Shoes",
+      "reel_title": "The King's Impossible Task",
+      "category": "Problem Solving",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261122_210932.mp4",
+      "content_hash": "67223b025fba16191429ea295cbbaf7baeb8b4a3c7a3f589010be0d5df824838",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "1681836443328333",
+      "post_id": "122111880261540744"
     }
   ],
-  "last_updated": "2026-11-21T20:59:25Z"
+  "last_updated": "2026-11-22T21:10:24Z"
 }
