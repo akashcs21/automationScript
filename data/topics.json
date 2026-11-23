@@ -97,7 +97,13 @@
       "content_hash": "67223b025fba16191429ea295cbbaf7baeb8b4a3c7a3f589010be0d5df824838",
       "status": "published",
       "used_at": "2026-11-22T21:10:24.992967+00:00"
+    },
+    {
+      "topic": "The Weight of Regret",
+      "content_hash": "ee7903027d4a7a6a95fda5c10c139168fadfe8a7531de647610ae3875abc6e8c",
+      "status": "published",
+      "used_at": "2026-11-23T13:28:48.602178+00:00"
     }
   ],
-  "last_updated": "2026-11-22T21:10:24.992985+00:00"
+  "last_updated": "2026-11-23T13:28:48.602195+00:00"
 }

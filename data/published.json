@@ -142,7 +142,18 @@
       "status": "published",
       "video_id": "1681836443328333",
       "post_id": "122111880261540744"
+    },
+    {
+      "topic": "The Weight of Regret",
+      "reel_title": "Don't Let Regret Haunt You",
+      "category": "Life Lessons",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261123_132741.mp4",
+      "content_hash": "ee7903027d4a7a6a95fda5c10c139168fadfe8a7531de647610ae3875abc6e8c",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "1294588006177606",
+      "post_id": "122112168207540744"
     }
   ],
-  "last_updated": "2026-11-22T21:10:24Z"
+  "last_updated": "2026-11-23T13:28:48Z"
 }
