@@ -153,7 +153,18 @@
       "status": "published",
       "video_id": "1294588006177606",
       "post_id": "122112168207540744"
+    },
+    {
+      "topic": "The Donkey and the Well",
+      "reel_title": "Donkey Falls in Well: Shakes Off Dirt & Steps Up!",
+      "category": "Overcoming Adversity",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261124_022859.mp4",
+      "content_hash": "5282bf11c40527eb1d5c43d46910dcdedbf82c1d85de02b443ed41d19f3e4b07",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "2952576311764144",
+      "post_id": "122112372573540744"
     }
   ],
-  "last_updated": "2026-11-23T13:28:48Z"
+  "last_updated": "2026-11-24T02:29:59Z"
 }
