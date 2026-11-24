@@ -164,7 +164,18 @@
       "status": "published",
       "video_id": "2952576311764144",
       "post_id": "122112372573540744"
+    },
+    {
+      "topic": "The Chinese Bamboo Tree",
+      "reel_title": "The Bamboo Tree Secret: Why Nothing Happens (Then Everything Does)",
+      "category": "Patience & Growth",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261124_140612.mp4",
+      "content_hash": "cc6573f9088eb8d79de8e63c10629d294dad4bf55f0f6adcfddc745a7a27fd50",
+      "dry_run": false,
+      "status": "published",
+      "video_id": "1440673931113307",
+      "post_id": "122112542061540744"
     }
   ],
-  "last_updated": "2026-11-24T02:29:59Z"
+  "last_updated": "2026-11-24T14:07:16Z"
 }

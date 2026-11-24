@@ -109,7 +109,13 @@
       "content_hash": "5282bf11c40527eb1d5c43d46910dcdedbf82c1d85de02b443ed41d19f3e4b07",
       "status": "published",
       "used_at": "2026-11-24T02:29:59.030438+00:00"
+    },
+    {
+      "topic": "The Chinese Bamboo Tree",
+      "content_hash": "cc6573f9088eb8d79de8e63c10629d294dad4bf55f0f6adcfddc745a7a27fd50",
+      "status": "published",
+      "used_at": "2026-11-24T14:07:16.910908+00:00"
     }
   ],
-  "last_updated": "2026-11-24T02:29:59.030454+00:00"
+  "last_updated": "2026-11-24T14:07:16.910927+00:00"
 }
