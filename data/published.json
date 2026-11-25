@@ -184,7 +184,16 @@
       "content_hash": "7dce7c327cea00ce6869b5821d33cf6aca551dd2dedda596731912f514e30eb0",
       "dry_run": true,
       "status": "dry_run"
+    },
+    {
+      "topic": "The Heavy Glass of Water",
+      "reel_title": "The Weight of Daily Stress",
+      "category": "Stress Management",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261125_131930.mp4",
+      "content_hash": "a1eb96b8ce80815130e98b00d1da6d21d3f4e765d29211567f8f293f4f5c7291",
+      "dry_run": true,
+      "status": "dry_run"
     }
   ],
-  "last_updated": "2026-11-25T00:00:45Z"
+  "last_updated": "2026-11-25T13:20:08Z"
 }
