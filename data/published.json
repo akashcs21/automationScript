@@ -175,7 +175,16 @@
       "status": "published",
       "video_id": "1440673931113307",
       "post_id": "122112542061540744"
+    },
+    {
+      "topic": "The Two Wolves Inside You",
+      "reel_title": "The Wolf You Feed",
+      "category": "Mindset & Psychology",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261125_000000.mp4",
+      "content_hash": "7dce7c327cea00ce6869b5821d33cf6aca551dd2dedda596731912f514e30eb0",
+      "dry_run": true,
+      "status": "dry_run"
     }
   ],
-  "last_updated": "2026-11-24T14:07:16Z"
+  "last_updated": "2026-11-25T00:00:45Z"
 }
