@@ -202,7 +202,16 @@
       "content_hash": "a5b99e7066e4ac7e9f77ef61a25e7aa6a58205c7327927c54c8317dae2bb5edf",
       "dry_run": true,
       "status": "dry_run"
+    },
+    {
+      "topic": "The Boiling Frog Syndrome",
+      "reel_title": "The Trap You Don't See Coming",
+      "category": "Psychological Parables",
+      "video_file": "/home/runner/work/automationScript/automationScript/output/jigyasa_lab_reel_20261126_125914.mp4",
+      "content_hash": "1ba73b7ddcb6ce4c652cda942c254bae386b4b6cded810b94be56dcbf9ad76a4",
+      "dry_run": true,
+      "status": "dry_run"
     }
   ],
-  "last_updated": "2026-11-25T23:44:55Z"
+  "last_updated": "2026-11-26T13:00:02Z"
 }
